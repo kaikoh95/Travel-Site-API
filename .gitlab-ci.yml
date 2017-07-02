@@ -1,0 +1,18 @@
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+  - docker-compose build
+
+deploy:
+  stage: deploy
+  script:
+  - docker-compose down --remove-orphans
+  - docker-compose up -d
