@@ -1,7 +1,9 @@
-version: "2"
+version: "3"
 services:
   app:
     build: .
+    ports:
+      - "${SENG365_PORT}:4941"
   mysql:
     image: "mysql:5.7"
     environment:
