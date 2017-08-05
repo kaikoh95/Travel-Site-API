@@ -4,6 +4,9 @@ services:
     build: .
     ports:
       - "${SENG365_PORT}:4941"
+    environment:
+      - SENG365_MYSQL_HOST
+      - SENG365_MYSQL_PORT
   mysql:
     image: "mysql:5.7"
     environment:
