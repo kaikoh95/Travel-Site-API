@@ -7,6 +7,8 @@ services:
     environment:
       - SENG365_MYSQL_HOST
       - SENG365_MYSQL_PORT
+    depends_on:
+      - mysql
   mysql:
     image: "mysql:5.7"
     environment:
