@@ -1,8 +1,8 @@
 {
-  "name": "application-name",
+  "name": "SENG365-Crowdfunding-API",
   "version": "0.0.1",
   "scripts": {
-    "start": "node test.js"
+    "start": "node app.js"
   },
   "dependencies": {
     "body-parser": "^1.17.2",
