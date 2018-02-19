@@ -4,12 +4,3 @@ services:
     build: .
     ports:
       - "${SENG365_PORT}:4941"
-    environment:
-      - SENG365_MYSQL_HOST
-      - SENG365_MYSQL_PORT
-    depends_on:
-      - mysql
-  mysql:
-    image: "mysql:5.7"
-    environment:
-      - MYSQL_ROOT_PASSWORD=secret
