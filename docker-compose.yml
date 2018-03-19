@@ -4,3 +4,6 @@ services:
     build: .
     ports:
       - "${SENG365_PORT}:4941"
+networks:
+  default:
+    driver: overlay
