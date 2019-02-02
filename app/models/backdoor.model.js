@@ -7,12 +7,14 @@ exports.resetDB = async function () {
     let promises = [];
 
     const sql = await fs.readFile('app/resources/create_database.sql', 'utf8');
-    promises.push(db.getPool().query(sql));  // sync call to recreate DB
+    promises.push(db.getPool().query(sql));
 
-    const files = await fs.readdir(photoDirectory);
-    for (const file of files) {
-        if (file !== 'default.png') {
-            promises.push(fs.unlink(photoDirectory + file));  // sync call to delete photo
+    if (await fs.exists(photoDirectory)) {
+        const files = await fs.readdir(photoDirectory);
+        for (const file of files) {
+            if (file !== 'default.png') {
+                promises.push(fs.unlink(photoDirectory + file));
+            }
         }
     }
 
