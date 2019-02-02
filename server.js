@@ -1,15 +1,24 @@
-const
-    bodyParser = require('body-parser'),
-    express = require('express');
+require('dotenv').config();
+const db = require('./config/db');
+const express = require('./config/express');
 
-var app = express();
+const app = express();
+const port = process.env.PORT || 4941;
 
-app.use(bodyParser.json());
+// Test connection to MySQL on start-up
+async function testDbConnection() {
+    try {
+        await db.createPool();
+        await db.getPool().getConnection();
+    } catch (err) {
+        console.error('Unable to connect to MySQL.');
+        process.exit(1);
+    }
+}
 
-app.get('/', function (req, res) {
-    res.send({"message": "Hello World!"})
-});
-
-app.listen(4941, function () {
-    console.log('Example app listening on container port 4941!')
-})
+testDbConnection()
+    .then(function () {
+        app.listen(port, function () {
+            console.log(`Listening on port: ${port}`);
+        });
+    });
