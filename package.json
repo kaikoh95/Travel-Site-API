@@ -9,6 +9,7 @@
     "body-parser": "^1.18.3",
     "dotenv": "^6.2.0",
     "express": "^4.16.4",
+    "mz": "^2.7.0",
     "promise-mysql": "^3.3.1"
   }
 }

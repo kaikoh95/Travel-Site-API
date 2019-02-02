@@ -10,6 +10,7 @@ const allowCrossOriginRequests = function (req, res, next) {
 
 module.exports = function () {
     const app = express();
+    app.rootUrl = '/api/v1';
 
     // MIDDLEWARE
     app.use(allowCrossOriginRequests);
