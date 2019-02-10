@@ -9,10 +9,10 @@ const port = 4941;
 async function testDbConnection() {
     console.log(`
     SENG365_PORT: ${process.env.SENG365_PORT}
-    SENG365_HOST: ${process.env.SENG365_HOST}
-    SENG365_USER: ${process.env.SENG365_USER}
-    SENG365_PASSWORD: ${process.env.SENG365_PASSWORD}
-    SENG365_DATABASE: ${process.env.SENG365_DATABASE}
+    SENG365_MYSQL_HOST: ${process.env.SENG365_MYSQL_HOST}
+    SENG365_MYSQL_USER: ${process.env.SENG365_MYSQL_USER}
+    SENG365_MYSQL_PASSWORD: ${process.env.SENG365_MYSQL_PASSWORD}
+    SENG365_MYSQL_DATABASE: ${process.env.SENG365_MYSQL_DATABASE}
     `);
     try {
         await db.createPool();
