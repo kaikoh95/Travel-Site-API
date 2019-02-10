@@ -21,4 +21,5 @@ check-running:
   stage: deploy
   script:
   - echo $CI_PROJECT_NAME
-  - test "$(docker ps | grep $CI_PROJECT_NAME)"
+  - echo "${CI_PROJECT_NAME//-}"
+  - test "$(docker ps | grep ${CI_PROJECT_NAME//-})"
