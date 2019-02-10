@@ -5,6 +5,7 @@ cache:
 stages:
   - build
   - deploy
+  - verify
 
 build:
   stage: build
@@ -17,9 +18,14 @@ deploy:
   - docker-compose down --remove-orphans
   - docker-compose up -d
 
-check-running:
-  stage: deploy
+check-container:
+  stage: verify
   script:
-  - echo $CI_PROJECT_NAME
-  - echo "${CI_PROJECT_NAME//-}"
+  - echo "Checking that container for ${CI_PROJECT_NAME//-} is running..."
   - test "$(docker ps | grep ${CI_PROJECT_NAME//-})"
+
+get-logs:
+  stage: verify
+  script:
+  - docker logs -t "$(docker ps -a | grep ${CI_PROJECT_NAME//-} | awk '{print $1;}')"
+  when: on_failure
