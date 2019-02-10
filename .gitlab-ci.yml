@@ -16,3 +16,9 @@ deploy:
   script:
   - docker-compose down --remove-orphans
   - docker-compose up -d
+
+check-running:
+  stage: deploy
+  script:
+  - echo $CI_PROJECT_NAME
+  - [ "$(docker ps | grep $CI_PROJECT_NAME)" ]
