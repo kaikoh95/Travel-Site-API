@@ -28,4 +28,3 @@ get-logs:
   stage: verify
   script:
   - docker logs -t "$(docker ps -a | grep ${CI_PROJECT_NAME//-} | awk '{print $1;}')"
-  when: on_failure
