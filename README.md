@@ -18,6 +18,8 @@ The files in this repo are required to implement the continuous deployment proce
 
 Logs for the entire CI process are available in the CI/CD -> Pipelines section in your GitLab repo.
 
+Note: The value of ```SENG365_PORT``` is defined for you when the skeleton project was added into your eng-git repo. You can find the value for your project by going to the eng-git project and then: settings > CI / CD > Expand Variables > Reveal Values.
+
 # Running locally
 
 All you need to do to run your server locally is create a `.env` file in the root directory of this project including the following information:
