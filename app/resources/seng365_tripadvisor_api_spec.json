@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "SENG365 2019: Travel Site API",
-    "version": "0.1.6",
+    "version": "0.1.7",
     "description": "This specification documents the API that must be implemented for Assignment One. \n\nThe API provides all of the server-side functionality necessary in order to implement the user stories for Assignment Two."
   },
   "tags": [
@@ -13,10 +13,6 @@
     {
       "name": "venues.photos",
       "description": "Endpoints for retrieving, uploading and deleting venue photos."
-    },
-    {
-      "name": "facilities",
-      "description": "Endpoints for retrieving, adding and removing facilities for a venue."
     },
     {
       "name": "reviews",
@@ -516,146 +512,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/facilities": {
-      "get": {
-        "tags": [
-          "facilities"
-        ],
-        "summary": "Retrieves all possible facilities.",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Facility"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/venues/{id}/facilities": {
-      "parameters": [
-        {
-          "name": "id",
-          "description": "ID of the venue to retrieve.",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/VenueOverview/properties/venueId"
-          }
-        }
-      ],
-      "get": {
-        "tags": [
-          "facilities"
-        ],
-        "summary": "Retrieves a venue's facilities.",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Facility"
-                  }
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      }
-    },
-    "/venues/{id}/facilities/{facilityId}": {
-      "parameters": [
-        {
-          "name": "id",
-          "description": "ID of the venue to retrieve.",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/VenueOverview/properties/venueId"
-          }
-        },
-        {
-          "name": "facilityId",
-          "description": "ID of the facility to add/remove.",
-          "in": "path",
-          "required": true,
-          "schema": {
-            "$ref": "#/components/schemas/Facility/properties/facilityId"
-          }
-        }
-      ],
-      "post": {
-        "tags": [
-          "facilities"
-        ],
-        "summary": "Adds the given facility to the venue.",
-        "description": "Only the administrator of the venue can change its facilities.",
-        "security": [
-          {
-            "UserToken": []
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Created"
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "facilities"
-        ],
-        "summary": "Remove the given facility from the venue.",
-        "description": "Only the administrator of the venue can change its facilities.",
-        "security": [
-          {
-            "UserToken": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "400": {
-            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -1426,21 +1282,6 @@
         "type": "integer",
         "minimum": 0,
         "maximum": 4
-      },
-      "Facility": {
-        "title": "Facility",
-        "type": "object",
-        "properties": {
-          "facilityId": {
-            "type": "integer"
-          },
-          "facilityName": {
-            "type": "string"
-          },
-          "facilityDescription": {
-            "type": "string"
-          }
-        }
       },
       "VenueCategory": {
         "title": "VenueCategory",

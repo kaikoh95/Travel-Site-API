@@ -10,15 +10,6 @@ VALUES
     (4, 'Events', 'What\'s going on in town.'),
     (5, 'Wonders of Nature', 'The most beautiful spots out of town.');
 
-INSERT INTO Facility
-    (facility_id, facility_name, facility_description)
-VALUES
-    (1, 'Public Restroom', ''),
-    (2, 'WiFi', ''),
-    (3, 'Free Parking', ''),
-    (4, 'Japanese Cuisine', ''),
-    (5, 'Italian Cuisine', '');
-
 INSERT INTO Venue
     (venue_id, admin_id, category_id, venue_name, city, short_description, long_description, date_added, address,
     latitude,

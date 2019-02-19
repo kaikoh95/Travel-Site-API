@@ -8,9 +8,7 @@ DROP VIEW IF EXISTS VenueCostRatingMaxOccurs;
 DROP VIEW IF EXISTS VenueCostRatingOccurs;
 DROP TABLE IF EXISTS Review;
 DROP TABLE IF EXISTS VenuePhoto;
-DROP TABLE IF EXISTS VenueFacility;
 DROP TABLE IF EXISTS Venue;
-DROP TABLE IF EXISTS Facility;
 DROP TABLE IF EXISTS VenueCategory;
 DROP TABLE IF EXISTS User;
 
@@ -43,15 +41,6 @@ CREATE TABLE VenueCategory
   )
 ENGINE = InnoDB;
 
-CREATE TABLE Facility
-  (
-     facility_id          INT NOT NULL AUTO_INCREMENT,
-     facility_name        VARCHAR(64) NOT NULL,
-     facility_description VARCHAR(128) NOT NULL,
-     PRIMARY KEY (facility_id)
-  )
-ENGINE = InnoDB;
-
 CREATE TABLE Venue
   (
      venue_id          INT NOT NULL AUTO_INCREMENT,
@@ -68,16 +57,6 @@ CREATE TABLE Venue
      PRIMARY KEY (venue_id),
      FOREIGN KEY (admin_id) REFERENCES User (user_id),
      FOREIGN KEY (category_id) REFERENCES VenueCategory (category_id)
-  )
-ENGINE = InnoDB;
-
-CREATE TABLE VenueFacility
-  (
-     venue_id    INT NOT NULL,
-     facility_id INT NOT NULL,
-     PRIMARY KEY (venue_id, facility_id),
-     FOREIGN KEY (venue_id) REFERENCES Venue (venue_id),
-     FOREIGN KEY (facility_id) REFERENCES Facility (facility_id)
   )
 ENGINE = InnoDB;
 
