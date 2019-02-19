@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "1758af34-3b97-4703-b937-9726b0b5df6e",
-		"name": "tripadvisor_api",
+		"name": "travel_site_api",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
