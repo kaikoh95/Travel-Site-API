@@ -1,4 +1,4 @@
-FROM node:8.9.4
+FROM node:11.9.0
 
 # Create app directory
 RUN mkdir -p /usr/src/app
