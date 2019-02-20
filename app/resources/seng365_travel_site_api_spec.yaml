@@ -865,6 +865,8 @@ components:
           type: integer
         categoryName:
           type: string
+        categoryDescription:
+          type: string
           
     VenueSearchRequest:
       title: VenueSearchRequest
