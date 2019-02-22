@@ -1,12 +1,6 @@
-# Template for SENG365 student repo
+# SENG365 student repo
 
-# Usage
-
-The files in this repo are required to implement the continuous deployment process for the 2017 SENG365 assignments. This repo is intended to be used as the `template-url` argument the `create-repos.js` script from the seng365/gitlab-setup repo, for example:
- 
-`node create-repos.js --private-token=<your gitlab private token> --env=production --template-url=<this repo>`
-
-# Overview of the continuous deployment process
+## Overview of the continuous deployment process
 
 1. You hackity hack...
 2. You commit your changes to your git repo on `eng-git.canterbury.ac.nz`.
@@ -20,7 +14,7 @@ Logs for the entire CI process are available in the CI/CD -> Pipelines section i
 
 Note: The value of ```SENG365_PORT``` is defined for you when the skeleton project was added into your eng-git repo. You can find the value for your project by going to the eng-git project and then: settings > CI / CD > Expand Variables > Reveal Values.
 
-# Running locally
+## Running locally
 
 All you need to do to run your server locally is create a `.env` file in the root directory of this project including the following information:
 
@@ -34,3 +28,9 @@ SENG365_MYSQL_DATABASE={your usercode}
 1. Use `npm install` to populate the `node_modules/` directory with up-to-date packages.
 2. Run `npm run start` or `npm run debug` to start the server.
 3. The server will be accessible on `localhost:4941`.
+
+## Automated testing
+
+1. Open your browser to `http://csse-s365.canterbury.ac.nz/`
+2. Enter the url `csse-s365.canterbury.ac.nz` and your unique `SENG365_PORT` in order to run the API tests on the latest build of your server. 
+3. The test runner will generate a report of the results for you. 
