@@ -1,8 +1,11 @@
 openapi: 3.0.0
 info:
   title: "SENG365 2019: Travel Site API"
-  version: 0.1.7
+  version: 1.0.0
   description: "This specification documents the API that must be implemented for Assignment One. \n\nThe API provides all of the server-side functionality necessary in order to implement the user stories for Assignment Two."
+servers:
+  - url: http://csse-s365.canterbury.ac.nz:4001/api/v1
+    description: reference server
 
 
 tags:
