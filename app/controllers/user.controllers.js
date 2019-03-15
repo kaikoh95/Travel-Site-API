@@ -73,8 +73,6 @@ exports.logout = function(req, res) {
             return res.status(200).send("OK: Logged out successfully");
         }
     });
-    return null;
-
 };
 
 exports.read = function(req, res) {
