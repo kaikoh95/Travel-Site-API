@@ -12,7 +12,7 @@ module.exports = function(app){
         .post(users.logout);
 
     app.route('/api/v1/users/:userId')
-        .get(users.read),
+        .get(users.read)
         .patch(users.update);
 
 
