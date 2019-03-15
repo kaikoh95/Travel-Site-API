@@ -57,8 +57,11 @@ exports.removeToken = (token, done) => {
     db.getPool().query(
         "UPDATE User SET auth_token=null WHERE auth_token=?",
         [token],
-        function(err){
-            return done(err)
+        function(err, results) {
+            if (results['changedRows'] == 0) {
+                return done(true); // no changes = not authorized
+            }
+            return done(false, results)
         }
     );
 };
