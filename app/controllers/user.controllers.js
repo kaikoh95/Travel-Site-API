@@ -25,7 +25,6 @@ exports.read = function(req, res){
 };
 
 exports.create = function(req, res){
-
     let user_data = {
         "username": req.body.username,
         "email": req.body.email,
@@ -34,19 +33,27 @@ exports.create = function(req, res){
         "password": req.body.password
     };
 
-    console.log(user_data);
-    let username = user_data['username'].toString();
-    let email = user_data['email'].toString();
-    let givenName = user_data['givenName'].toString();
-    let familyName = user_data['familyName'].toString();
-    let password = user_data['password'].toString();
+    if (!emailvalidator.validate(user_data["email"]) || user_data["password"].length < 1) {
+        return res.status(400).send('Bad request: One or more required key is missing/incorrect');
 
-    const hash = getHash(password);
+    } else {
+        console.log(user_data);
+        let username = user_data['username'].toString();
+        let email = user_data['email'].toString();
+        let givenName = user_data['givenName'].toString();
+        let familyName = user_data['familyName'].toString();
+        let password = user_data['password'].toString();
 
-    let values = [
-        [username, email, givenName, familyName, hash]
-    ];
-    User.insert(values, function(result){
-        res.json(result);
-    });
+        const hash = getHash(password);
+
+        let values = [
+            [username, email, givenName, familyName, hash]
+        ];
+        User.insert(values, function(err, id){
+            if (err) {
+                return res.sendStatus(400); // duplicate record
+            }
+            res.status(201).send({"userId": id.toString()});
+        });
+    }
 };
