@@ -8,6 +8,12 @@ exports.getAll = function(done){
 
 };
 
+exports.getOne = function(userId, done){
+    db.getPool().query('SELECT * FROM User WHERE user_id = ?',
+        userId, function (err, rows) {
+        if (err) return done(err);
+        done(rows);
+    }); };
 
 exports.insert = function(user, done){
 

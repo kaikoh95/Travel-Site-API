@@ -5,5 +5,8 @@ module.exports = function(app){
         .get(users.list) //debug
         .post(users.create);
 
+    app.route('/api/v1/users/:userId')
+        .get(users.read);
+
 
 };

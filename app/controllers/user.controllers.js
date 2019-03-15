@@ -16,6 +16,13 @@ exports.list = function(req, res){
    });
 };
 
+exports.read = function(req, res){
+    let id = req.params.userId;
+    User.getOne(id, function(result){
+        res.json(result);
+    });
+
+};
 
 exports.create = function(req, res){
 
