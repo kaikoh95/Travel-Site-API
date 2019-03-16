@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: "SENG365 2019: Travel Site API"
-  version: 1.0.0
+  version: 1.0.1
   description: "This specification documents the API that must be implemented for Assignment One. \n\nThe API provides all of the server-side functionality necessary in order to implement the user stories for Assignment Two."
 servers:
   - url: http://csse-s365.canterbury.ac.nz:4001/api/v1
@@ -158,8 +158,6 @@ paths:
           description: Bad Request
         401:
           description: Unauthorized
-        403:
-          description: Forbidden
   
   /venues/{id}:
     parameters:
@@ -250,7 +248,9 @@ paths:
       tags:
         - venues.photos
       summary: Add a photo to a venue.
-      description: If makePrimary is `true`, then this photo should become the new primary photo for this venue. Therefore, any other photo that previously had `isPrimary=true` should then have `isPrimary=false`. If there is no existing primary photo for this venue, makePrimary is considered to be `true`. 
+      description: "If makePrimary is `true`, then this photo should become the new primary photo for this venue. \n\n* Therefore, any other photo that previously had `isPrimary=true` should then have `isPrimary=false`. \n\n* If there is no existing primary photo for this venue, makePrimary is considered to be `true`. \n\nThis request should be sent in `multipart/form-data` format. \n\n* The photo part should be in standard form-data file format, including filename metadata."
+      security:
+        - UserToken: []
       requestBody:
         content:
           multipart/form-data:
@@ -309,6 +309,8 @@ paths:
         - venues.photos
       summary: Delete a venue's photo.
       description: If the venue's **primary** photo is deleted, then one of its remaining photos should be randomly selected to become the new primary photo. This is irrelevant if this is the venue\'s only photo. 
+      security:
+        - UserToken: []
       responses:
         200:
           description: OK
@@ -338,6 +340,8 @@ paths:
         - venues.photos
       summary: Set a photo as the primary one for this venue.
       description: This sets `isPrimary = 0` for all other photos of this venue.
+      security:
+        - UserToken: []
       responses:
         200:
           description: OK
@@ -414,7 +418,7 @@ paths:
       tags:
         - reviews
       summary: Retrieves all the reviews authored by a given user.
-      description: Each review is returned with a brief overview of the venue it is for.
+      description: "Each review is returned with a brief overview of the venue it is for. \n\n* This endpoint requires authentication so that anonymous users cannot view this information on a user's profile."
       security:
         - UserToken: []
       responses:
@@ -426,6 +430,8 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/ReviewWithVenue'
+        401:
+          description: Unauthorized
         404:
           description: Not Found
 
@@ -474,7 +480,7 @@ paths:
       tags:
         - users
       summary: Login as an existing user.
-      description: Either username or email may be used, but one of them must be provided (in addition to a password).
+      description: "Either username or email may be used, but one of them must be provided (in addition to a password). \n\n* The response should contain a (unique) randomly-generated token that the client-side will store. \n\n* Whenever the client makes a request that requires authentication, it will provide that same token as the value of the `X-Authorization` header in the request. \n\n* The server will compare this to the value it has stored in the database to authenticate that request."
       requestBody:
         content:
           application/json:
@@ -530,6 +536,9 @@ paths:
         - users
       summary: Retrieve information about a user.
       description: The email field is only included when the currently authenticated user is viewing their **own** details. 
+      security:
+        - {}
+        - UserToken: []
       responses:
         200:
           description: OK
@@ -596,7 +605,9 @@ paths:
       tags:
         - users.photos
       summary: Set a user's profile photo.
-      description: Will replace the user's current profile photo if one already exists.
+      description: "Will replace the user's current profile photo if one already exists. \n\n* The request body should contain the raw binary content of the photo, i.e. it should NOT be in `multipart/form-data` format or contain any file metadata. \n\n* If the file is a `.png`, the request will be sent with `Content-Type: image/png`, whereas `.jpeg` and `.jpg` files will be sent with `Content-Type: image/jpeg`."
+      security:
+        - UserToken: []
       requestBody:
         content:
           image/png:
@@ -623,6 +634,8 @@ paths:
       tags:
         - users.photos
       summary: Delete a user's profile photo.
+      security:
+        - UserToken: []
       responses:
         200:
           description: OK
