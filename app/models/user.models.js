@@ -2,7 +2,7 @@ const db = require('../../config/db');
 const passwordHash = require('../helpers/password_hash');
 const crypto = require('crypto');
 
-exports.getAll = function(done){
+exports.getAll = (done) => {
     db.getPool().query('SELECT * FROM User', function (err, rows) {
         if (err) return done({"ERROR": "Error selecting"});
         return done(rows);
@@ -14,7 +14,7 @@ exports.getAll = function(done){
  * @param user - contains user details supplied from the request body
  * @param done - Checker to be returned
  */
-exports.insert = function(user, done){
+exports.insert = (user, done) => {
     let values = [user];
     db.getPool().query('INSERT INTO User (username, email, given_name, family_name, password) VALUES ?',
         values, function(err, results) {
@@ -30,7 +30,7 @@ exports.insert = function(user, done){
  * @param password - String of user password
  * @param done - Checker to be returned
  */
-exports.authenticate = function(username, email, password, done){
+exports.authenticate = (username, email, password, done) => {
     db.getPool().query(
         'SELECT user_id, password FROM User WHERE (username=? OR email=?)',
         [username, email],
@@ -74,7 +74,7 @@ exports.removeToken = (token, done) => {
  * @param done - Checker to be returned
  */
 
-exports.setToken = function(id, done){
+exports.setToken = (id, done) => {
     let token = crypto.randomBytes(16).toString('hex');
     db.getPool().query(
         'UPDATE User SET auth_token=? WHERE user_id=?',
@@ -91,10 +91,10 @@ exports.setToken = function(id, done){
  * @param done - Checker to be returned
  */
 
-exports.getOne = function(userId, done){
+exports.getOne = (userId, done) => {
     db.getPool().query(
         'SELECT username, email, given_name AS givenName,' +
-        'family_name AS familyName, auth_token AS token FROM User WHERE user_id = ?',
+        'family_name AS familyName FROM User WHERE user_id = ?',
         userId, function (err, results) {
             if (err || results.length < 1) {
                 return done(true);
@@ -102,4 +102,49 @@ exports.getOne = function(userId, done){
                 done(false, results);
             }
         });
+};
+
+/**
+ * Gets ID from authentication token provided as a form of authorization
+ * @param token - Auth token provided
+ * @param done - Checker
+ * @returns {*} - query from SQL
+ */
+
+exports.getIdFromToken = (token, done) => {
+    if (token === undefined || token === null) {
+        return done(true, null);
+    } else {
+        db.getPool().query(
+            'SELECT user_id FROM User WHERE auth_token=?',
+            [token],
+            function(err, result) {
+                if (result.length === 1)
+                    return done(null, result[0].user_id);
+                return done(err, null);
+            });
+    }
+};
+
+/**
+ * Amends user details based on information provided
+ * @param id - User ID
+ * @param values - User details to be amended
+ * @param done - Checker
+ */
+
+exports.amend = (id, values, done) => {
+    let querySQL = '';
+
+    if (values.length > 4) {
+        querySQL = 'UPDATE User SET username=?, email=?, given_name=?, family_name=?, password=? WHERE user_id=?';
+    } else {
+        querySQL = 'UPDATE User SET username=?, email=?, given_name=?, family_name=? WHERE user_id=?';
+    }
+
+    values[0].push(id);
+    db.getPool().query(querySQL, values[0], function(err, results) {
+        if (err) return done(err);
+        done(err, results);
+    });
 };
