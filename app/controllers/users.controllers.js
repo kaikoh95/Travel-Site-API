@@ -11,9 +11,9 @@ exports.list = function(req, res) {
 };
 
 exports.create = function(req, res) {
-    if (req.body.hasOwnProperty("username") || req.body.hasOwnProperty("email") ||
-        req.body.hasOwnProperty("givenName") || req.body.hasOwnProperty("familyName") ||
-        req.body.hasOwnProperty("password")) {
+    if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("email") ||
+        !req.body.hasOwnProperty("givenName") || !req.body.hasOwnProperty("familyName") ||
+        !req.body.hasOwnProperty("password")) {
         return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
     }
 
