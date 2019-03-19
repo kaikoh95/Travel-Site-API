@@ -171,9 +171,6 @@ exports.update = function(req, res) {
                     let values = [data];
 
                     User.amend(id, values, function(err) {
-                        if (err) {
-                            return res.status(400).send("Bad Request: Unable to process request");
-                        }
                         res.status(200).send("OK: Details successfully updated");
                     });
 
