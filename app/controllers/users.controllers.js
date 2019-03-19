@@ -103,15 +103,15 @@ exports.read = function(req, res) {
 
 exports.update = function(req, res) {
     let id = parseInt(req.params.userId);
-    console.log((req.params));
+
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
-    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
-        console.log("hello");
+
+    if (Object.keys(req.body).length === 0) {
         return res.status(400).send('Bad Request: Nothing is provided');
     }
-    let token = req.headers['x-authorization'];
 
+    let token = req.headers['x-authorization'];
     if (token ===  undefined) {
         return res.status(401).send('Unauthorised: Please provide an authentication token');
     } else {
