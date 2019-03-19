@@ -149,6 +149,9 @@ exports.update = function(req, res) {
 
                     let data = [givenName, familyName, password];
 
+                    if (familyName === "" || givenName === "") {
+                        return res.status(400).send('Bad Request: Invalid fields provided');
+                    }
                     if (password === "") {
                         data.pop();
                     }
