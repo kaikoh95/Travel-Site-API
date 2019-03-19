@@ -45,7 +45,7 @@ exports.create = function(req, res) {
             if (err) {
                 return res.status(400).send("Bad Request: Duplicate username/email found");
             }
-            res.status(201).send({"userId": id.toString()});
+            res.status(201).send({"userId": id});
         });
     }
 };
@@ -63,7 +63,7 @@ exports.login = function(req, res) {
                 res.status(400).send('Bad Request: Invalid credentials supplied');
             } else {
                 User.setToken(id, function(err, token) {
-                    res.status(200).send({"userId": id.toString(), "token": token.toString()});
+                    res.status(200).send({"userId": id, "token": token.toString()});
                 });
             }
         });
