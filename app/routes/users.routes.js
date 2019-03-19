@@ -1,4 +1,4 @@
-const users = require('../controllers/user.controllers');
+const users = require('../controllers/users.controllers');
 
 module.exports = function(app){
     app.route('/api/v1/users')

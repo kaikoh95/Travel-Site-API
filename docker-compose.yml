@@ -9,6 +9,7 @@ services:
       - SENG365_MYSQL_USER
       - SENG365_MYSQL_PASSWORD
       - SENG365_MYSQL_DATABASE
+    restart: on-failure
 networks:
   default:
     driver: overlay

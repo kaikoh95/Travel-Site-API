@@ -1,16 +1,16 @@
-const User = require('../models/user.models');
+const User = require('../models/users.models');
 const emailvalidator = require("email-validator");
 const validator = require('../helpers/validator');
 const passwordHash = require('../helpers/password_hash');
 
-exports.list = function(req, res){
+exports.list = function(req, res) {
    User.getAll(function(results){
        res.json(results);
 
    });
 };
 
-exports.create = function(req, res){
+exports.create = function(req, res) {
     let user_data = {
         "username": req.body.username,
         "email": req.body.email,
