@@ -19,7 +19,7 @@ module.exports = function () {
 
     // ROUTES
     require('../app/routes/backdoor.routes')(app);
-    require('../app/routes/user.routes')(app);
+    require('../app/routes/users.routes')(app);
 
 
     // DEBUG (you can remove this)
