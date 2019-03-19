@@ -11,6 +11,12 @@ exports.list = function(req, res) {
 };
 
 exports.create = function(req, res) {
+    if (req.body.hasOwnProperty("username") || req.body.hasOwnProperty("email") ||
+        req.body.hasOwnProperty("givenName") || req.body.hasOwnProperty("familyName") ||
+        req.body.hasOwnProperty("password")) {
+        return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
+    }
+
     let user_data = {
         "username": req.body.username,
         "email": req.body.email,
@@ -20,7 +26,7 @@ exports.create = function(req, res) {
     };
 
     if (!emailvalidator.validate(user_data["email"]) || user_data["password"].length < 1 ||
-        user_data["givenName"] === "" || user_data["familyName"] === "") {
+        user_data["givenName"] === "" || user_data["familyName"] === "" || user_data["username"] === "") {
         return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
 
     } else {
@@ -97,8 +103,13 @@ exports.read = function(req, res) {
 
 exports.update = function(req, res) {
     let id = parseInt(req.params.userId);
+    console.log((req.params));
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+        console.log("hello");
+        return res.status(400).send('Bad Request: Nothing is provided');
+    }
     let token = req.headers['x-authorization'];
 
     if (token ===  undefined) {
