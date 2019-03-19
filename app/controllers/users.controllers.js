@@ -152,10 +152,10 @@ exports.update = function(req, res) {
                     }
 
                     if (req.body.hasOwnProperty("password")) {
-                        if (req.body.password.length < 1) {
+                        if (req.body.password.length < 1 || !isNaN(req.body.password)) {
                             return res.status(400).send('Bad Request: Invalid password provided');
                         } else {
-                            password = passwordHash.getHash(req.body.password);
+                            password = passwordHash.getHash(String(req.body.password));
                         }
                     }
 
