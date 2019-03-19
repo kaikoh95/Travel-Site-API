@@ -124,22 +124,10 @@ exports.update = function(req, res) {
                         return res.status(404).send('Not Found: User does not exist');
                     }
 
-                    let username = "";
-                    let email = "";
                     let givenName = "";
                     let familyName = "";
                     let password = "";
 
-                    if (req.body.hasOwnProperty("username")) {
-                        username = req.body.username;
-                    } else {
-                        username = results[0].username;
-                    }
-                    if (req.body.hasOwnProperty("email")) {
-                        email = req.body.email;
-                    } else {
-                        email = results[0].email;
-                    }
                     if (req.body.hasOwnProperty("givenName")) {
                         givenName = req.body.givenName;
                     } else {
@@ -159,11 +147,7 @@ exports.update = function(req, res) {
                         }
                     }
 
-                    if (!emailvalidator.validate(email)) {
-                        return res.status(400).send('Bad Request: Invalid email provided');
-                    }
-
-                    let data = [username, email, givenName, familyName, password];
+                    let data = [givenName, familyName, password];
 
                     if (password === "") {
                         data.pop();

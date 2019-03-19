@@ -136,10 +136,10 @@ exports.getIdFromToken = (token, done) => {
 exports.amend = (id, values, done) => {
     let querySQL = '';
 
-    if (values.length > 4) {
-        querySQL = 'UPDATE User SET username=?, email=?, given_name=?, family_name=?, password=? WHERE user_id=?';
+    if (values.length > 3) {
+        querySQL = 'UPDATE User SET given_name=?, family_name=?, password=? WHERE user_id=?';
     } else {
-        querySQL = 'UPDATE User SET username=?, email=?, given_name=?, family_name=? WHERE user_id=?';
+        querySQL = 'UPDATE User SET given_name=?, family_name=? WHERE user_id=?';
     }
 
     values[0].push(id);
