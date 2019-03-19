@@ -95,7 +95,7 @@ exports.read = function(req, res) {
             if (userId !== id) {
                 delete results[0].email;
             }
-            return res.status(200).json(results);
+            return res.status(200).json(results[0]);
         });
     });
 
