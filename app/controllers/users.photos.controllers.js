@@ -23,18 +23,18 @@ exports.retrieve = (req, res) => {
                         return res.status(404).send('Not Found: User has not set a profile photo');
                     } else {
 
-                        let filename1 = Buffer.from(file, 'base64').toString('ascii');
+                        let filename1 = Buffer.from(file, 'base64');
 
                         let filename2 = filename1.toString();
                         if (filename2.includes("PNG") || filename2.includes("png")) {
-                            res.set("Content-Type", 'image/png');
+                            res.setHeader("Content-type", "image/png");
                         } else if (
                             filename2.includes("JFIF") || filename2.includes("jfif") ||
                             filename2.includes("JPG") || filename2.includes("JPEG") ||
                             filename2.includes("jpg") || filename2.includes("jpeg")) {
-                            res.set("Content-Type", 'image/jpeg');
+                            res.setHeader("Content-type", "image/jpeg");
                         }
-                        res.status(200)
+                        res.status(200);
                         res.send(filename1);
                         return res;
                     }
