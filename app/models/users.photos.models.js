@@ -25,6 +25,17 @@ exports.putPhoto = (filename, id, done) => {
         });
 };
 
-exports.deletePhoto = (req, res) => {
-
+exports.deletePhoto = (id, done) => {
+    let values = [[id]];
+    db.getPool().query(
+        'UPDATE User SET profile_photo_filename=NULL WHERE user_id=?',
+        values,
+        function(err, result) {
+            if (err) {
+                return done(err);
+            } else {
+                return done(err, result);
+            }
+        }
+    );
 };
