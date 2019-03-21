@@ -35,7 +35,7 @@ exports.retrieve = (req, res) => {
                             res.setHeader("Content-type", "image/jpeg");
                         }
                         res.status(200);
-                        res.send(filename1);
+                        res.send(file);
                         return res;
                     }
                 }
