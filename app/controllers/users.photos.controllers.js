@@ -24,7 +24,6 @@ exports.retrieve = (req, res) => {
                     } else {
 
                         let filename1 = Buffer.from(file, 'base64');
-                        console.log(filename1)
                         let filename2 = filename1.toString();
                         if (filename2.includes("PNG") || filename2.includes("png")) {
                             res.setHeader("Content-type", "image/png");
@@ -50,8 +49,6 @@ exports.put = (req, res) => {
     if (!req.body) {
         return res.status(400).send("Bad Request: Please provide a correct format for photo");
     } else {
-        console.log(req.body)
-
         User.getOne(id, function(err, results) {
             if (err || !results) {  // no user found
                 return res.status(404).send('Not Found: User does not exist');
@@ -99,5 +96,49 @@ exports.put = (req, res) => {
 };
 
 exports.remove = (req, res) => {
-    //User.deletePhoto
+    let id = parseInt(req.params.userId);
+    if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
+        'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
+
+    let token = req.headers['x-authorization'];
+    if (token === undefined) {
+        return res.status(401).send('Unauthorised: Please provide an authentication token');
+    } else {
+        User.getOne(id, function (err, results) {
+            if (err || !results) {  // no user found
+                return res.status(404).send('Not Found: User does not exist');
+            } else {
+                let token = req.headers['x-authorization'];
+                if (token === undefined) {
+                    return res.status(401).send('Unauthorised: Please provide an authentication token');
+                } else {
+                    User.getIdFromToken(token, function (err, userId) {
+                        if (userId !== id) {
+                            return res.status(403).send('Forbidden: Incorrect authentication token provided');
+                        } else {
+                            Photo.getPhoto(id, function (err, results) {
+                                if (err || !results) {
+                                    return res.status(404).send('Not Found: User has not set a profile photo');
+                                } else {
+                                    let file = results[0].profile_photo_filename;
+                                    if (file === null || file === undefined) {
+                                        return res.status(404).send('Not Found: User has not set a profile photo');
+                                    } else {
+                                        Photo.deletePhoto(id, function(err, results) {
+                                            if (err) {
+                                                return res.status(404).send('Not Found: User has not set a profile photo');
+                                            } else {
+                                                return res.status(200).send("OK: Deleted profile photo");
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
 };
+
