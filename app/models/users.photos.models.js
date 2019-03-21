@@ -1,7 +1,7 @@
 const db = require('../../config/db');
 
 exports.getPhoto = (id, done) => {
-    let values = [id];
+    let values = [[id]];
     db.getPool().query(
         'SELECT profile_photo_filename FROM User WHERE user_id=?',
         values,
