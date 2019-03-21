@@ -24,7 +24,7 @@ exports.retrieve = (req, res) => {
                     } else {
 
                         let filename1 = Buffer.from(file, 'base64');
-
+                        console.log(filename1)
                         let filename2 = filename1.toString();
                         if (filename2.includes("PNG") || filename2.includes("png")) {
                             res.setHeader("Content-type", "image/png");
@@ -34,9 +34,7 @@ exports.retrieve = (req, res) => {
                             filename2.includes("jpg") || filename2.includes("jpeg")) {
                             res.setHeader("Content-type", "image/jpeg");
                         }
-                        res.status(200);
-                        res.send(file);
-                        return res;
+                        return res.status(200).send(filename1);
                     }
                 }
             });
@@ -52,6 +50,7 @@ exports.put = (req, res) => {
     if (!req.body) {
         return res.status(400).send("Bad Request: Please provide a correct format for photo");
     } else {
+        console.log(req.body)
 
         User.getOne(id, function(err, results) {
             if (err || !results) {  // no user found
@@ -66,7 +65,7 @@ exports.put = (req, res) => {
                             return res.status(403).send('Forbidden: Incorrect authentication token provided');
                         } else {
                             let isCreated = false;
-                            let filename = Buffer.from(req.body, 'binary').toString('base64');
+                            let filename = req.body.toString('base64');
 
                             Photo.getPhoto(id, function (err, results) {
                                 if (err || !results) {
