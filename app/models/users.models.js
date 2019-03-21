@@ -61,7 +61,7 @@ exports.removeToken = (token, done) => {
             if (results['changedRows'] == 0) {
                 return done(true); // no changes = not authorized
             }
-            return done(false, results)
+            return done(false, results);
         }
     );
 };
