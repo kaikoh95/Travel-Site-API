@@ -81,20 +81,20 @@ exports.getOne = function (req, res) {
         return res.status(404).send('Not Found: Invalid venue ID');
     }
     Venue.getVenue(id, function(err, results) {
-        if (err || !results) {  // no venue found
+        if (err || !results || results.length < 1) {  // no venue found
             return res.status(404).send('Not Found: Venue does not exist');
         } else {
             let venueName = results[0].venueName;
             let userId = results[0].userId;
             User.getNameFromId(userId, function(err, name) {
-                if (err || !name) {  // no user found
-                    return res.status(404).send('Not Found: User not found');
+                if (err || !name || name.length < 1) {  // no user found
+                    return res.status(500).send('Internal Server Error: No user found');
                 } else {
                     let username = name[0].username;
                     let catId = results[0].categoryId;
                     Category.getCategory(catId, function(err, categoryDetails) {
                         if (err || !categoryDetails || categoryDetails.length < 1) {
-                            return res.status(404).send('Not Found: Invalid category');
+                            return res.status(500).send('Internal Server Error: Empty category');
                         } else {
                             let catName = categoryDetails[0].categoryName;
                             let catDes = categoryDetails[0].categoryDescription;
@@ -111,7 +111,7 @@ exports.getOne = function (req, res) {
                                 let photoDes = "None";
                                 let isPrimary = false;
                                 if (err) {
-                                    return res.status(404).send('Not Found: Photo section does not exist');
+                                    return res.status(500).send('Internal Server Error: Photo section is empty');
                                 } else {
                                     if (photo.length > 0) {
                                         photoFilename = photo[0].photoFilename;
