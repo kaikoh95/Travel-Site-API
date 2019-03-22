@@ -161,6 +161,96 @@ exports.getOne = function (req, res) {
 };
 
 exports.update = function (req, res) {
+    let id = Number(req.params.venueId);
+    if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
+        return res.status(404).send('Not Found: Invalid venue ID');
+    }
+    Venue.getVenue(id, function(err, results) {
+        if (err || !results || results.length < 1) {  // no venue found
+            return res.status(404).send('Not Found: Venue does not exist');
+        } else {
+            let adminId = results[0].userId;
+            let venueName = results[0].venueName;
+            let catId = results[0].categoryId;
+            let shortDes = results[0].shortDescription;
+            let longDes = results[0].longDescription;
+            let address = results[0].address;
+            let city = results[0].city;
+            let longitude = results[0].longitude;
+            let latitude = results[0].latitude;
+
+            let token = req.headers['x-authorization'];
+            if (token ===  undefined) {
+                return res.status(401).send('Unauthorised: Please provide an authentication token');
+            } else {
+                User.getIdFromToken(token, function (err, userId) {
+                    if (err || !userId || userId.length < 1) {
+                        return res.status(401).send('Unauthorised: Incorrect authentication token provided');
+                    } else { // authenticated
+                        if (userId!== adminId) {
+                            return res.status(403).send('Forbidden: You are not the admin of the site');
+                        } else {
+                            if (req.body.length < 1 || !req.body) {
+                                return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
+                            } else {
+                                if (req.body.hasOwnProperty("venueName") && req.body.venueName !== "") {
+                                    venueName = req.body.venueName;
+                                }
+                                if (req.body.hasOwnProperty("categoryId") && req.body.categoryId !== "") {
+                                    if (!Number.isInteger(req.body.categoryId)) {
+                                        return res.status(400).send('Bad Request: Incorrect input');
+                                    } else  {
+                                        catId = Number(req.body.categoryId);
+                                    }
+                                }
+                                if (req.body.hasOwnProperty("city") && req.body.city !== "") {
+                                    city = req.body.city;
+                                }
+                                if (req.body.hasOwnProperty("shortDescription") && req.body.shortDescription !== "") {
+                                    shortDes = req.body.shortDescription;
+                                }
+                                if (req.body.hasOwnProperty("longDescription") && req.body.longDescription !== "") {
+                                    longDes = req.body.longDescription;
+                                }
+                                if (req.body.hasOwnProperty("address") && req.body.address !== "") {
+                                    address = req.body.address;
+                                }
+                                if (req.body.hasOwnProperty("latitude") && req.body.latitude !== "") {
+                                    if (isNaN(req.body.latitude)) {
+                                        return res.status(400).send('Bad Request: Incorrect input');
+                                    } else {
+                                        latitude = Number(req.body.latitude);
+                                        if (latitude > 90.0) {
+                                            return res.status(400).send('Bad Request: Incorrect input');
+                                        }
+                                    }
+                                }
+                                if (req.body.hasOwnProperty("longitude") && req.body.longitude !== "") {
+                                    if (isNaN(req.body.longitude)) {
+                                        return res.status(400).send('Bad Request: Incorrect input');
+                                    } else {
+                                        longitude = Number(req.body.longitude);
+                                        if (longitude < -180.0) {
+                                            return res.status(400).send('Bad Request: Incorrect input');
+                                        }
+                                    }
+                                }
+
+                                let values = [venueName, catId, city, shortDes, longDes, address, latitude, longitude, id];
+                                Venue.updateVenue(values, function(err) {
+                                    if (err) {
+                                        return res.status(400).send("Bad Request: Unable to process request");
+                                    }
+                                    res.status(200).send("OK: Details successfully updated");
+                                });
+                            }
+                        }
+                    }
+                });
+            }
+
+        }
+    });
 
 };
 
