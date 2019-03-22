@@ -29,7 +29,7 @@ module.exports = function () {
     require('../app/routes/users.routes')(app);
     require('../app/routes/users.photos.routes')(app);
     require('../app/routes/reviews.routes')(app);
-
+    require('../app/routes/venues.routes')(app);
 
     return app;
 };

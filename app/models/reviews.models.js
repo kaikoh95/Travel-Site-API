@@ -20,7 +20,6 @@ exports.insert = (params, done) => {
             return done(err, results.insertId);
         });
 };
-//(`reviewed_venue_id`, `review_author_id`, `review_body`, `star_rating`, `cost_rating`, `time_posted`)
 
 exports.retrieveSpecific = (userId, venueId, done) => {
     db.getPool().query(
@@ -48,18 +47,6 @@ exports.getVenueFromId = (id, done) => {
     db.getPool().query(
         'SELECT category_id AS categoryId, venue_name AS venueName, city, admin_id AS adminId,' +
         'short_description AS shortDescription, venue_id AS venueId FROM Venue WHERE venue_id=?',
-        [id],
-        function(err, results) {
-            if (err) return done(err);
-            return done(err, results);
-        });
-};
-
-
-// TODO: move to final folder
-exports.getCategoryFromId = (id, done) => {
-    db.getPool().query(
-        'SELECT category_name AS categoryName FROM VenueCategory WHERE category_id=?',
         [id],
         function(err, results) {
             if (err) return done(err);
