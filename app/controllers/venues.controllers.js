@@ -165,7 +165,7 @@ exports.update = function (req, res) {
 };
 
 exports.getCategory = function (req, res) {
-    Venue.getCategories(function(results) {
+    Category.getAllCategories(function(results) {
         return res.status(200).json(results);
     });
 };

@@ -34,10 +34,3 @@ exports.getPhoto = (id, done) => {
             return done(err, results);
         });
 };
-
-exports.getCategories = (done) => {
-    db.getPool().query('SELECT * FROM VenueCategory', function (err, rows) {
-        if (err) return done(err);
-        return done(rows);
-    });
-};
