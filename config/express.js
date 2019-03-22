@@ -1,5 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const sortJson = require('sort-json');
+
 
 const allowCrossOriginRequests = function (req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
@@ -26,6 +28,8 @@ module.exports = function () {
     require('../app/routes/backdoor.routes')(app);
     require('../app/routes/users.routes')(app);
     require('../app/routes/users.photos.routes')(app);
+    require('../app/routes/reviews.routes')(app);
+
 
     return app;
 };
