@@ -80,7 +80,7 @@ exports.getOne = function (req, res) {
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
         return res.status(404).send('Not Found: Invalid venue ID');
     }
-    Venue.getOne(id, function(err, results) {
+    Venue.getVenue(id, function(err, results) {
         if (err || !results) {  // no venue found
             return res.status(404).send('Not Found: Venue does not exist');
         } else {
@@ -88,13 +88,13 @@ exports.getOne = function (req, res) {
             let userId = results[0].userId;
             User.getNameFromId(userId, function(err, name) {
                 if (err || !name) {  // no user found
-                    return res.status(500).send('Internal Server Error: No user found');
+                    return res.status(404).send('Not Found: User not found');
                 } else {
                     let username = name[0].username;
                     let catId = results[0].categoryId;
                     Category.getCategory(catId, function(err, categoryDetails) {
                         if (err || !categoryDetails || categoryDetails.length < 1) {
-                            return res.status(500).send('Internal Server Error: Empty category');
+                            return res.status(404).send('Not Found: Invalid category');
                         } else {
                             let catName = categoryDetails[0].categoryName;
                             let catDes = categoryDetails[0].categoryDescription;
@@ -111,7 +111,7 @@ exports.getOne = function (req, res) {
                                 let photoDes = "None";
                                 let isPrimary = false;
                                 if (err) {
-                                    return res.status(500).send('Internal Server Error: Photo section is empty');
+                                    return res.status(404).send('Not Found: Photo section does not exist');
                                 } else {
                                     if (photo.length > 0) {
                                         photoFilename = photo[0].photoFilename;

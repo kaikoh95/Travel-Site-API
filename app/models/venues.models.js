@@ -12,7 +12,7 @@ exports.insert = (venue, done) => {
     });
 };
 
-exports.getOne = (id, done) => {
+exports.getVenue = (id, done) => {
     db.getPool().query(
         'SELECT admin_id AS userId, category_id AS categoryId, venue_name AS venueName, city, ' +
         'short_description AS shortDescription, long_description AS longDescription, date_added AS dateAdded, ' +
