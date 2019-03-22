@@ -107,18 +107,20 @@ exports.getOne = function (req, res) {
                             let longitude = results[0].longitude;
 
                             Venue.getPhoto(id, function(err, photo) {
-                                if (err || !photo || photo.length < 1) {
+                                let photoFilename = "None";
+                                let photoDes = "None";
+                                let isPrimary = false;
+                                if (err) {
                                     return res.status(500).send('Internal Server Error: Photo section is empty');
                                 } else {
-                                    let photoFilename = photo[0].photoFilename;
-                                    let photoDes = ""
-                                    if (photo[0].photoDescription !== "") {
-                                        photoDes = photo[0].photoDescription;
-                                    }
-                                    console.log(photoDes)
-                                    let isPrimary = false;
-                                    if (photo[0].isPrimary === 1) {
-                                        isPrimary = true;
+                                    if (photo.length > 0) {
+                                        photoFilename = photo[0].photoFilename;
+                                        if (photo[0].photoDescription !== "") {
+                                            photoDes = photo[0].photoDescription;
+                                        }
+                                        if (photo[0].isPrimary === 1) {
+                                            isPrimary = true;
+                                        }
                                     }
                                     let data = {
                                         "venueName": venueName,
