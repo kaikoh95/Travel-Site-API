@@ -12,6 +12,7 @@
     "email-validator": "^2.0.4",
     "express": "^4.16.4",
     "mz": "^2.7.0",
-    "promise-mysql": "^3.3.1"
+    "promise-mysql": "^3.3.1",
+    "sort-json": "^2.0.0"
   }
 }
