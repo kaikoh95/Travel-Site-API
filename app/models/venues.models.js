@@ -23,6 +23,16 @@ exports.getVenue = (id, done) => {
         });
 };
 
+exports.updateVenue = (values, done) => {
+    db.getPool().query(
+        'UPDATE Venue SET venue_name=?, category_id=?, city=?, short_description=?, ' +
+        'long_description=?, address=?, latitude=?, longitude=? WHERE venue_id=?',
+        values, function (err, result) {
+            if (err) return done(err);
+            return done(err, result);
+        });
+};
+
 // TODO: move to final folder
 exports.getPhoto = (id, done) => {
     db.getPool().query(
