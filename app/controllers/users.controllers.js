@@ -4,8 +4,8 @@ const validator = require('../helpers/validator');
 const passwordHash = require('../helpers/password_hash');
 
 exports.list = function(req, res) {
-   User.getAll(function(results){
-       res.json(results);
+   User.getAll(function(results) {
+       return res.json(results);
 
    });
 };
