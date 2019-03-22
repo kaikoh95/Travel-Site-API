@@ -190,7 +190,9 @@ exports.update = function (req, res) {
                         if (userId!== adminId) {
                             return res.status(403).send('Forbidden: You are not the admin of the site');
                         } else {
-                            if (req.body.length < 1 || !req.body) {
+                            console.log(req.body)
+                            if (req.body.length < 1 || !req.body || req.body === {} || req.body === undefined || 
+                                req.body === null || req.body.constructor === Object && Object.keys(req.body).length === 0) {
                                 return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                             } else {
                                 if (req.body.hasOwnProperty("venueName") && req.body.venueName !== "") {
