@@ -19,7 +19,7 @@ exports.insert = (user, done) => {
     db.getPool().query('INSERT INTO User (username, email, given_name, family_name, password) VALUES ?',
         values, function(err, results) {
         if (err) return done(err);
-            return done(err, results.insertId)
+            return done(err, results.insertId);
     });
 };
 
@@ -147,4 +147,21 @@ exports.amend = (id, values, done) => {
         if (err) return done(err);
         done(err, results);
     });
+};
+
+/**
+ * Obtains username from given user ID
+ * @param userId - User ID
+ * @param done - Checker
+ */
+exports.getNameFromId = (userId, done) => {
+    db.getPool().query(
+        'SELECT username FROM User WHERE user_id = ?',
+        userId, function (err, results) {
+            if (err || results.length < 1) {
+                return done(true);
+            } else {
+                done(false, results);
+            }
+        });
 };
