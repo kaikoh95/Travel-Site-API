@@ -1,9 +1,6 @@
 const Photo = require('../models/users.photos.models');
 const User = require('../models/users.models');
 const validator = require('../helpers/validator');
-const fs = require('fs');
-const path = require('path');
-const dir = path.dirname(require.main.filename);
 
 exports.retrieve = (req, res) => {
     let id = parseInt(req.params.userId);
