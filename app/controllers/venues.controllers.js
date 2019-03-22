@@ -92,7 +92,7 @@ exports.getOne = function (req, res) {
                 } else {
                     let username = name[0].username;
                     let catId = results[0].categoryId;
-                    Category.getCategory(catId, function(err, categoryDetails) {
+                    Category.getCategories(catId, function(err, categoryDetails) {
                         if (err || !categoryDetails || categoryDetails.length < 1) {
                             return res.status(500).send('Internal Server Error: Empty category');
                         } else {
