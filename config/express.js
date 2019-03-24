@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const sortJson = require('sort-json');
+const busboyBodyParser = require('busboy-body-parser');
 
 
 const allowCrossOriginRequests = function (req, res, next) {
@@ -22,7 +22,8 @@ module.exports = function () {
     app.use(bodyParser.raw({type: 'image/png', limit: '50mb', extended: true}));
     app.use(bodyParser.raw({type: 'image/jpeg', limit: '50mb', extended: true}));
     app.use(bodyParser.raw({type: 'image/jpg', limit: '50mb', extended: true}));
-
+    app.use(busboyBodyParser());
+    app.use(express.static('../app/photos'));
 
     // ROUTES
     require('../app/routes/backdoor.routes')(app);
@@ -30,6 +31,7 @@ module.exports = function () {
     require('../app/routes/users.photos.routes')(app);
     require('../app/routes/reviews.routes')(app);
     require('../app/routes/venues.routes')(app);
+    require('../app/routes/venues.photos.routes')(app);
 
     return app;
 };
