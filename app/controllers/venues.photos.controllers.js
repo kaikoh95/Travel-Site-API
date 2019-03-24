@@ -46,11 +46,10 @@ exports.addPhoto = function (req, res) {
                             let photoDescription = req.body.description;
                             let makePrimary = Number(req.body.makePrimary);
 
-                            VenuePhoto.getPhoto(id, function(err, photos) {
+                            VenuePhoto.getPhoto(venueId, function(err, photos) {
                                 if (err || !photos || photos.length < 1) {
                                     makePrimary = 1;
                                 } else {
-                                    let count = 0;
                                     photos.forEach(function (result) {
                                         if (makePrimary === 1) {
                                             let updateArray = [0, venueId, result.photoFilename]
@@ -61,23 +60,20 @@ exports.addPhoto = function (req, res) {
                                             });
                                         } else if (makePrimary === 0) {
                                             if (result.isPrimary === 0) {
-                                                count++;
-                                                if (count >= photos.length) {
-                                                    makePrimary = 1;
-                                                }
+                                                makePrimary = 1;
                                             } else if (result.isPrimary === 1) {
                                                 makePrimary = 0;
                                             }
                                         }
                                     });
                                 }
-                                let putData = [[venueId, photoName, photoRawString, photoDescription, makePrimary]];
-                                VenuePhoto.insertPhoto(putData, function(err) {
-                                    if (err) {
-                                        return res.status(400).send("Bad Request: Duplicate photos found");
-                                    }
-                                    return res.status(201).send("Created: Successfully photo");
-                                });
+                            });
+                            let putData = [[venueId, photoName, photoRawString, photoDescription, makePrimary]];
+                            VenuePhoto.insertPhoto(putData, function(err) {
+                                if (err) {
+                                    return res.status(400).send("Bad Request: Duplicate photos found");
+                                }
+                                return res.status(201).send("Created: Successfully photo");
                             });
                         }
                     }
