@@ -42,27 +42,3 @@ exports.retrieve = (id, done) => {
         });
 };
 
-// TODO: move to venues.models
-exports.getVenueFromId = (id, done) => {
-    db.getPool().query(
-        'SELECT category_id AS categoryId, venue_name AS venueName, city, admin_id AS adminId,' +
-        'short_description AS shortDescription, venue_id AS venueId FROM Venue WHERE venue_id=?',
-        [id],
-        function(err, results) {
-            if (err) return done(err);
-            return done(err, results);
-        });
-};
-
-// TODO: move to final folder
-exports.getPhotoFromId = (id, done) => {
-    db.getPool().query(
-        'SELECT photo_filename AS primaryPhoto FROM VenuePhoto WHERE (is_primary=1 AND venue_id=?)',
-        [id],
-        function(err, results) {
-            if (err) return done(err);
-            return done(err, results);
-        });
-};
-
-
