@@ -100,28 +100,23 @@ exports.getPhoto = function (req, res) {
             }
             let venueId = id;
             let filename = req.params.photoFilename;
-            VenuePhoto.getPhoto(venueId, function(err, photos) {
-                if (err || !photos || photos.length < 1) {
+            let values = [venueId, filename];
+            VenuePhoto.getPhotoFromName(values, function(err, photo) {
+                if (err || !photo || photo.length < 1) {
                     return res.status(404).send('Not Found: Photo does not exist');
                 } else {
-                    photos.forEach(function (photo) {
-                        let resultFilename = photo.photoFilename;
-                        if (resultFilename === filename) {
-                            let bufferPhoto = photo.photoRaw;
-                            let filename1 = Buffer.from(bufferPhoto, 'base64');
-                            let filename2 = filename1.toString();
-                            if (filename2.includes("PNG") || filename2.includes("png")) {
-                                res.setHeader("Content-type", "image/png");
-                            } else if (
-                                filename2.includes("JFIF") || filename2.includes("jfif") ||
-                                filename2.includes("JPG") || filename2.includes("JPEG") ||
-                                filename2.includes("jpg") || filename2.includes("jpeg")) {
-                                res.setHeader("Content-type", "image/jpeg");
-                            }
-                            return res.status(200).send(filename1);
-                        }
-                    });
-                    return res.status(404).send('Not Found: Photo does not exist');
+                    let bufferPhoto = photo.photoRaw;
+                    let filename1 = Buffer.from(bufferPhoto, 'base64');
+                    let filename2 = filename1.toString();
+                    if (filename2.includes("PNG") || filename2.includes("png")) {
+                        res.setHeader("Content-type", "image/png");
+                    } else if (
+                        filename2.includes("JFIF") || filename2.includes("jfif") ||
+                        filename2.includes("JPG") || filename2.includes("JPEG") ||
+                        filename2.includes("jpg") || filename2.includes("jpeg")) {
+                        res.setHeader("Content-type", "image/jpeg");
+                    }
+                    return res.status(200).send(filename1);
                 }
             });
         }

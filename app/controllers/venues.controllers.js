@@ -151,7 +151,8 @@ exports.getOne = function (req, res) {
                                     "longitude": longitude,
                                     "photos": photosArray
                                 };
-                                return res.status(200).send(data);
+                                //res.setHeader("Content-type", "application/json");
+                                return res.status(200).json(data);
 
                             });
                         }
