@@ -109,7 +109,7 @@ exports.getOne = function (req, res) {
                             let city = results[0].city;
                             let shortDes = results[0].shortDescription;
                             let longDes = results[0].longDescription;
-                            let dateAdded = "2018-12-25T00:00:00.000Z"; //results[0].dateAdded;
+                            let dateAdded = results[0].dateAdded;
                             let address = results[0].address;
                             let latitude = results[0].latitude;
                             let longitude = results[0].longitude;
@@ -151,13 +151,7 @@ exports.getOne = function (req, res) {
                                     "address": address,
                                     "latitude": latitude,
                                     "longitude": longitude,
-                                    "photos": [
-                                        {
-                                            "photoFilename": "McH0KVFMp3anZP65oNF7fCCuQ13t85mf.jpeg",
-                                            "photoDescription": "A photo of a tree.",
-                                            "isPrimary": true
-                                        }
-                                    ]//photosArray
+                                    "photos": photosArray
                                 };
                                 res.setHeader("Content-type", "application/json");
                                 return res.status(200).json(data);
