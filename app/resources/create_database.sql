@@ -67,7 +67,7 @@ CREATE TABLE VenuePhoto
      photo_raw         VARCHAR(4294967295) NOT NULL,
      photo_description VARCHAR(128),
      is_primary        BOOLEAN NOT NULL DEFAULT false,
-     PRIMARY KEY (photo_filename),
+     PRIMARY KEY (venue_id, photo_filename),
      FOREIGN KEY (venue_id) REFERENCES Venue (venue_id)
   )
 ENGINE = InnoDB;
