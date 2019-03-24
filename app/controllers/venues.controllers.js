@@ -1,4 +1,5 @@
 const Venue = require('../models/venues.models');
+const VenuePhoto = require('../models/venues.photos.models');
 const User = require('../models/users.models');
 const Category = require('../models/categories.models');
 const validator = require('../helpers/validator');
@@ -106,50 +107,52 @@ exports.getOne = function (req, res) {
                             let latitude = results[0].latitude;
                             let longitude = results[0].longitude;
 
-                            Venue.getPhoto(id, function(err, photo) {
-                                let photoFilename = "None";
-                                let photoDes = "None";
-                                let isPrimary = false;
-                                if (err) {
-                                    return res.status(500).send('Internal Server Error: Photo section is empty');
+                            VenuePhoto.getPhoto(id, function(err, photo) {
+                                let photosArray = []
+                                if (err || !photo || photo.length < 1) {
+                                    let photoData = {
+                                        "photoFilename": "None",
+                                        "photoDescription": "NULL",
+                                        "isPrimary": false
+                                    };
+                                    photosArray.push(photoData);
                                 } else {
-                                    if (photo.length > 0) {
-                                        photoFilename = photo[0].photoFilename;
-                                        if (photo[0].photoDescription !== "") {
-                                            photoDes = photo[0].photoDescription;
-                                        }
-                                        if (photo[0].isPrimary === 1) {
+                                    photo.forEach(function (result) {
+                                        let isPrimary = false;
+                                        if (result.isPrimary === 1) {
                                             isPrimary = true;
                                         }
-                                    }
-                                    let data = {
-                                        "venueName": venueName,
-                                        "admin": {
-                                            "userId": userId,
-                                            "username": username
-                                        },
-                                        "category": {
-                                            "categoryId": catId,
-                                            "categoryName": catName,
-                                            "categoryDescription": catDes
-                                        },
-                                        "city": city,
-                                        "shortDescription": shortDes,
-                                        "longDescription": longDes,
-                                        "dateAdded": dateAdded,
-                                        "address": address,
-                                        "latitude": latitude,
-                                        "longitude": longitude,
-                                        "photos": [
-                                            {
-                                                "photoFilename": photoFilename,
-                                                "photoDescription": photoDes,
-                                                "isPrimary": isPrimary
-                                            }
-                                        ]
-                                    };
-                                    return res.status(200).send(data);
+                                        let photoData = {
+                                            "photoFilename": String(result.photoFilename),
+                                            "photoDescription": result.photoDescription,
+                                            "isPrimary": isPrimary
+                                        };
+                                        photosArray.push(photoData);
+                                    });
+
                                 }
+                                let data = {
+                                    "venueName": venueName,
+                                    "admin": {
+                                        "userId": userId,
+                                        "username": username
+                                    },
+                                    "category": {
+                                        "categoryId": catId,
+                                        "categoryName": catName,
+                                        "categoryDescription": catDes
+                                    },
+                                    "city": city,
+                                    "shortDescription": shortDes,
+                                    "longDescription": longDes,
+                                    "dateAdded": dateAdded,
+                                    "address": address,
+                                    "latitude": latitude,
+                                    "longitude": longitude,
+                                    "photos": photosArray
+                                };
+                                return res.status(200).send(data);
+
                             });
                         }
                     });
@@ -190,8 +193,7 @@ exports.update = function (req, res) {
                         if (userId!== adminId) {
                             return res.status(403).send('Forbidden: You are not the admin of the site');
                         } else {
-                            console.log(req.body)
-                            if (req.body.length < 1 || !req.body || req.body === {} || req.body === undefined || 
+                            if (req.body.length < 1 || !req.body || req.body === {} || req.body === undefined ||
                                 req.body === null || req.body.constructor === Object && Object.keys(req.body).length === 0) {
                                 return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                             } else {
@@ -243,7 +245,7 @@ exports.update = function (req, res) {
                                     if (err) {
                                         return res.status(400).send("Bad Request: Unable to process request");
                                     }
-                                    res.status(200).send("OK: Details successfully updated");
+                                    return res.status(200).send("OK: Details successfully updated");
                                 });
                             }
                         }
