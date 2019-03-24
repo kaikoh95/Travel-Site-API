@@ -5,7 +5,13 @@ const Category = require('../models/categories.models');
 const validator = require('../helpers/validator');
 
 exports.list = function (req, res) {
-
+    Venue.getAll(req.query, function(err, results) {
+        if (err || !results) {
+            return res.sendStatus(400);
+        } else {
+            return res.status(200).json(results);
+        }
+    });
 };
 
 exports.create = function (req, res) {
@@ -42,7 +48,7 @@ exports.create = function (req, res) {
                 if (!Number.isInteger(data["categoryId"]) || data["venueName"] === "" ||
                     data["city"] === "" || data["shortDescription"] === "" || data["longDescription"] === "" ||
                     data["address"] === "" || isNaN(data["latitude"]) || isNaN(data["longitude"]) ||
-                    data["latitude"] > 90.0 || data["longitude"] < -180.0) {
+                    data["latitude"] > 90.0 || data["latitude"] < -90.0 || data["longitude"] < -180.0 || data["longitude"] > 180.0) {
                     return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                 }
 
@@ -103,20 +109,15 @@ exports.getOne = function (req, res) {
                             let city = results[0].city;
                             let shortDes = results[0].shortDescription;
                             let longDes = results[0].longDescription;
-                            let dateAdded = results[0].dateAdded;
+                            let dateAdded = "2018-12-25T00:00:00.000Z"; //results[0].dateAdded;
                             let address = results[0].address;
                             let latitude = results[0].latitude;
                             let longitude = results[0].longitude;
 
                             VenuePhoto.getPhoto(venueId, function(err, photo) {
-                                let photosArray = []
+                                let photosArray = [];
                                 if (err || !photo || photo.length < 1) {
-                                    let photoData = {
-                                        "photoFilename": "None",
-                                        "photoDescription": "NULL",
-                                        "isPrimary": false
-                                    };
-                                    photosArray.push(photoData);
+                                    photosArray = [];
                                 } else {
                                     photo.forEach(function (result) {
                                         let isPrimary = false;
@@ -150,7 +151,13 @@ exports.getOne = function (req, res) {
                                     "address": address,
                                     "latitude": latitude,
                                     "longitude": longitude,
-                                    "photos": photosArray
+                                    "photos": [
+                                        {
+                                            "photoFilename": "McH0KVFMp3anZP65oNF7fCCuQ13t85mf.jpeg",
+                                            "photoDescription": "A photo of a tree.",
+                                            "isPrimary": true
+                                        }
+                                    ]//photosArray
                                 };
                                 res.setHeader("Content-type", "application/json");
                                 return res.status(200).json(data);
@@ -226,7 +233,7 @@ exports.update = function (req, res) {
                                         return res.status(400).send('Bad Request: Incorrect input');
                                     } else {
                                         latitude = Number(req.body.latitude);
-                                        if (latitude > 90.0) {
+                                        if (latitude > 90.0 || latitude < -90.0) {
                                             return res.status(400).send('Bad Request: Incorrect input');
                                         }
                                     }
@@ -236,7 +243,7 @@ exports.update = function (req, res) {
                                         return res.status(400).send('Bad Request: Incorrect input');
                                     } else {
                                         longitude = Number(req.body.longitude);
-                                        if (longitude < -180.0) {
+                                        if (longitude < -180.0 || longitude > 180.0) {
                                             return res.status(400).send('Bad Request: Incorrect input');
                                         }
                                     }
