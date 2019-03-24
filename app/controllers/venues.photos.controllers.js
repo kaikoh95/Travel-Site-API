@@ -105,7 +105,7 @@ exports.getPhoto = function (req, res) {
                 if (err || !photo || photo.length < 1) {
                     return res.status(404).send('Not Found: Photo does not exist');
                 } else {
-                    let bufferPhoto = photo.photoRaw;
+                    let bufferPhoto = photo[0].photoRaw;
                     let filename1 = Buffer.from(bufferPhoto, 'base64');
                     let filename2 = filename1.toString();
                     if (filename2.includes("PNG") || filename2.includes("png")) {
