@@ -20,7 +20,7 @@ exports.list = function(req, res) {
                 let userId = result.userId;
                 User.getNameFromId(userId, function(err, nameWithId) {
                     if (err || !nameWithId) {  // no user found
-                        return res.status(500).send('Internal Server Error: Please check database');
+                        return res.status(404).send('Internal Server Error: Please check database');
                     } else {
                         let jsonResult = {
                             "reviewAuthor": {
@@ -66,49 +66,50 @@ exports.create = function(req, res) {
                     if (err || !venueDetails || venueDetails.length < 1) {
                         return res.status(400).send('Bad Request: Venue not found');
                     } else {
-                        if (userId === venueDetails[0].adminId) {
-                            return res.status(403).send('Forbidden: You cannot review your own site');
-                        } else {
-                            Review.retrieveSpecific(userId, venueId, function (err, results) {
-                                if (results.length > 0) {
-                                    return res.status(403).send('Forbidden: You have already reviewed this site');
-                                } else {
-                                    if (!req.body.hasOwnProperty("reviewBody") || !req.body.hasOwnProperty("starRating") ||
-                                        !req.body.hasOwnProperty("costRating")) {
-                                        return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
-                                    }
-                                    let currentDate = new Date();
-                                    let review_data = {
-                                        "reviewBody": req.body.reviewBody,
-                                        "starRating": Number(req.body.starRating),
-                                        "costRating": Number(req.body.costRating)
-                                    };
-
-                                    if (review_data["reviewBody"] === "" ||
-                                        review_data["costRating"] === "" || review_data["starRating"] === "" ||
-                                        !Number.isInteger(review_data["costRating"]) || !Number.isInteger(review_data["starRating"]) ||
-                                        review_data["costRating"] < 0 || review_data["starRating"] > 5 || review_data["starRating"] < 0) {
-                                        return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
-                                    }
-
-                                    let values = [
-                                        [
-                                            venueId, userId,
-                                            review_data["reviewBody"], review_data["starRating"],
-                                            review_data["costRating"], currentDate
-                                        ]
-                                    ];
-
-                                    Review.insert(values, function(err, output){
-                                        if (err) {
-                                            return res.status(500).send("Internal Server Error: Please check database");
-                                        }
-                                        res.status(201).send("Created: You have posted a review");
-                                    });
-
+                        venueDetails.forEach(function (venues) {
+                            if (userId === venues.adminId) {
+                                return res.status(403).send('Forbidden: You cannot review your own site');
+                            }
+                        });
+                        Review.retrieveSpecific(userId, venueId, function (err, results) {
+                            if (results.length > 0) {
+                                return res.status(403).send('Forbidden: You have already reviewed this site');
+                            } else {
+                                if (!req.body.hasOwnProperty("reviewBody") || !req.body.hasOwnProperty("starRating") ||
+                                    !req.body.hasOwnProperty("costRating")) {
+                                    return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                                 }
-                            });
-                        }
+                                let currentDate = new Date();
+                                let review_data = {
+                                    "reviewBody": req.body.reviewBody,
+                                    "starRating": Number(req.body.starRating),
+                                    "costRating": Number(req.body.costRating)
+                                };
+
+                                if (review_data["reviewBody"] === "" ||
+                                    review_data["costRating"] === "" || review_data["starRating"] === "" ||
+                                    !Number.isInteger(review_data["costRating"]) || !Number.isInteger(review_data["starRating"]) ||
+                                    review_data["costRating"] < 0 || review_data["starRating"] > 5 || review_data["starRating"] < 0) {
+                                    return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
+                                }
+
+                                let values = [
+                                    [
+                                        venueId, userId,
+                                        review_data["reviewBody"], review_data["starRating"],
+                                        review_data["costRating"], currentDate
+                                    ]
+                                ];
+
+                                Review.insert(values, function(err, output){
+                                    if (err) {
+                                        return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
+                                    }
+                                    res.status(201).send("Created: You have posted a review");
+                                });
+
+                            }
+                        });
                     }
                 });
 
@@ -136,7 +137,7 @@ exports.getOne = function(req, res) {
                     } else { // authenticated
                         Review.retrieve(id, function (err, results) {
                             if (err || !results || results.length < 1) {
-                                return res.status(500).send('Internal Server Error: No reviews found');
+                                return res.status(404).send('Internal Server Error: No reviews found');
                             } else {
                                 let index = 0;
                                 results.forEach(function (result) {
