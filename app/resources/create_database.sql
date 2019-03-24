@@ -24,7 +24,7 @@ CREATE TABLE User
      family_name            VARCHAR(128) NOT NULL,
      password               VARCHAR(256) NOT NULL COMMENT 'Only store the hash here, not actual password!',
      auth_token             VARCHAR(32),
-     profile_photo_filename VARCHAR(1048576),
+     profile_photo_filename VARCHAR(4294967295),
      PRIMARY KEY (user_id),
      UNIQUE (username),
      UNIQUE (email),
@@ -64,6 +64,7 @@ CREATE TABLE VenuePhoto
   (
      venue_id          INT NOT NULL,
      photo_filename    VARCHAR(128) NOT NULL,
+     photo_raw         VARCHAR(4294967295) NOT NULL,
      photo_description VARCHAR(128),
      is_primary        BOOLEAN NOT NULL DEFAULT false,
      PRIMARY KEY (venue_id, photo_filename),
