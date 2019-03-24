@@ -35,7 +35,7 @@ exports.addPhoto = function (req, res) {
                             if (!req.body.hasOwnProperty("description") || !req.body.hasOwnProperty("makePrimary")) {
                                 return res.status(403).send('Bad Request: One or more required field is missing/incorrect');
                             }
-                            if (!Number.isInteger(Number(req.body.makePrimary))) {
+                            if (req.body.makePrimary !== true || req.body.makePrimary !== false || req.body.description === "") {
                                 return res.status(405).send('Bad Request: One or more required field is missing/incorrect');
                             }
                             let photoArray = req.files.photo;
@@ -44,10 +44,10 @@ exports.addPhoto = function (req, res) {
                             let photoName = photoArray.name;
 
                             let photoDescription = req.body.description;
-                            if (photoDescription === "") {
-                                return res.status(409).send('Bad Request: One or more required field is missing/incorrect');
+                            let makePrimary = 0;
+                            if (req.body.makePrimary === true) {
+                                makePrimary = 1;
                             }
-                            let makePrimary = Number(req.body.makePrimary);
 
                             VenuePhoto.getPhoto(venueId, function(err, photos) {
                                 if (err || !photos || photos.length < 1) {
