@@ -36,7 +36,7 @@ exports.addPhoto = function (req, res) {
                                 return res.status(403).send('Bad Request: One or more required field is missing/incorrect');
                             }
                             if (!Number.isInteger(Number(req.body.makePrimary)) || req.body.description === "") {
-                                return res.status(404).send('Bad Request: One or more required field is missing/incorrect');
+                                return res.status(405).send('Bad Request: One or more required field is missing/incorrect');
                             }
                             let photoArray = req.files.photo;
                             let photoRaw = photoArray.data;
@@ -55,7 +55,7 @@ exports.addPhoto = function (req, res) {
                                             let updateArray = [0, venueId, result.photoFilename]
                                             VenuePhoto.updatePhoto(updateArray, function(error) {
                                                 if (error) {
-                                                    return res.status(405).send("Bad Request: Unable to process request");
+                                                    return res.status(408).send("Bad Request: Unable to process request");
                                                 }
                                             });
                                         } else if (makePrimary === 0) {
