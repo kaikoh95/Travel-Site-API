@@ -85,6 +85,7 @@ exports.getOne = function (req, res) {
         if (err || !results || results.length < 1) {  // no venue found
             return res.status(404).send('Not Found: Venue does not exist');
         } else {
+            let venueId = id;
             let venueName = results[0].venueName;
             let userId = results[0].userId;
             User.getNameFromId(userId, function(err, name) {
@@ -107,7 +108,7 @@ exports.getOne = function (req, res) {
                             let latitude = results[0].latitude;
                             let longitude = results[0].longitude;
 
-                            VenuePhoto.getPhoto(id, function(err, photo) {
+                            VenuePhoto.getPhoto(venueId, function(err, photo) {
                                 let photosArray = []
                                 if (err || !photo || photo.length < 1) {
                                     let photoData = {
@@ -151,7 +152,7 @@ exports.getOne = function (req, res) {
                                     "longitude": longitude,
                                     "photos": photosArray
                                 };
-                                //res.setHeader("Content-type", "application/json");
+                                res.setHeader("Content-type", "application/json");
                                 return res.status(200).json(data);
 
                             });
