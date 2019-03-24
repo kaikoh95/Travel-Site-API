@@ -1,6 +1,8 @@
 const Review = require('../models/reviews.models');
 const User = require('../models/users.models');
 const Category = require('../models/categories.models');
+const Venue = require('../models/venues.models');
+const VenuePhoto = require('../models/venues.photos.models');
 const validator = require('../helpers/validator');
 
 exports.list = function(req, res) {
@@ -60,7 +62,7 @@ exports.create = function(req, res) {
                 return res.status(401).send('Unauthorised: Incorrect authentication token provided');
             } else { // authenticated
                 let userId = id;
-                Review.getVenueFromId(venueId, function(err, venueDetails) {
+                Venue.getVenue(venueId, function(err, venueDetails) {
                     if (err || !venueDetails || venueDetails.length < 1) {
                         return res.status(400).send('Bad Request: Venue not found');
                     } else {
@@ -139,7 +141,7 @@ exports.getOne = function(req, res) {
                                 let index = 0;
                                 results.forEach(function (result) {
                                     let venueId = result.venueId;
-                                    Review.getVenueFromId(venueId, function(err, venueDetails) {
+                                    Venue.getVenue(venueId, function(err, venueDetails) {
                                         if (err || !venueDetails || venueDetails.length < 1) {
                                             return res.status(500).send('Internal Server Error: Invalid venue');
                                         } else {
@@ -148,7 +150,7 @@ exports.getOne = function(req, res) {
                                                 if (err || !categoryName || categoryName.length < 1) {
                                                     return res.status(500).send('Internal Server Error: Empty category');
                                                 } else {
-                                                    Review.getPhotoFromId(venueId, function(err, primaryPhoto) {
+                                                    VenuePhoto.getPhotoFromId(venueId, function(err, primaryPhoto) {
                                                         if (err || !primaryPhoto || primaryPhoto.length < 1) {
                                                             return res.status(500).send('Internal Server Error: Photo section is empty');
                                                         } else {
