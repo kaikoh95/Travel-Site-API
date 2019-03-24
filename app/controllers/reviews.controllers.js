@@ -154,7 +154,6 @@ exports.getOne = function(req, res) {
                                                         if (err || !primaryPhoto || primaryPhoto.length < 1) {
                                                             return res.status(500).send('Internal Server Error: Photo section is empty');
                                                         } else {
-                                                            console.log(primaryPhoto)
                                                             let jsonResult = {
                                                                 "reviewAuthor": {
                                                                     "userId": id,
