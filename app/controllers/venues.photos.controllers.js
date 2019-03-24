@@ -27,16 +27,16 @@ exports.addPhoto = function (req, res) {
                             return res.status(403).send('Forbidden: You are not the admin of the site');
                         } else {
                             if (req.files.constructor === Object && Object.keys(req.files).length !== 1) {
-                                return res.status(401).send('Bad Request: Please just provide one photo');
+                                return res.status(400).send('Bad Request: Please just provide one photo');
                             }
                             if (req.body.constructor === Object && Object.keys(req.body).length !== 2) {
-                                return res.status(402).send('Bad Request: One or more required field is missing/incorrect');
+                                return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                             }
                             if (!req.body.hasOwnProperty("description") || !req.body.hasOwnProperty("makePrimary")) {
-                                return res.status(403).send('Bad Request: One or more required field is missing/incorrect');
+                                return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                             }
-                            if (req.body.makePrimary !== true || req.body.makePrimary !== false || req.body.description === "") {
-                                return res.status(405).send('Bad Request: One or more required field is missing/incorrect');
+                            if ((req.body.makePrimary !== "true" && req.body.makePrimary !== "false") || req.body.description === "") {
+                                return res.status(400).send('Bad Request: One or more required field is missing/incorrect');
                             }
                             let photoArray = req.files.photo;
                             let photoRaw = photoArray.data;
@@ -58,7 +58,7 @@ exports.addPhoto = function (req, res) {
                                             let updateArray = [0, venueId, result.photoFilename]
                                             VenuePhoto.updatePhoto(updateArray, function(error) {
                                                 if (error) {
-                                                    return res.status(408).send("Bad Request: Unable to process request");
+                                                    return res.status(400).send("Bad Request: Unable to process request");
                                                 }
                                             });
                                         } else if (makePrimary === 0) {
@@ -74,7 +74,7 @@ exports.addPhoto = function (req, res) {
                             let putData = [[venueId, photoName, photoRawString, photoDescription, makePrimary]];
                             VenuePhoto.insertPhoto(putData, function(err) {
                                 if (err) {
-                                    return res.status(406).send("Bad Request: Duplicate photos found");
+                                    return res.status(400).send("Bad Request: Duplicate photos found");
                                 }
                                 return res.status(201).send("Created: Successfully photo");
                             });
