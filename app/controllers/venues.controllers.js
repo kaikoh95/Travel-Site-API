@@ -261,12 +261,12 @@ exports.list = (req, res) => {
                                             return item.adminId === queryAdmin;
                                         });
                                     }
-                                    if (queryStar > 0) {
+                                    if (queryStar > 0 && queryStar < 6) {
                                         venuesArray = venuesArray.filter(item => {
                                             return item.meanStarRating >= queryStar;
                                         });
                                     }
-                                    if (queryCost > 0) {
+                                    if (queryCost >= 0 && queryCost < 5) {
                                         venuesArray = venuesArray.filter(item => {
                                             return item.modeCostRating <= queryCost;
                                         });
