@@ -1,8 +1,13 @@
 const db = require('../../config/db');
 
+/**
+ * Retrieves all reviews authored by a user
+ * @param id
+ * @param done
+ */
 exports.getAll = (id, done) => {
     db.getPool().query(
-        'SELECT review_body AS reviewBody, star_rating AS starRating, ' +
+        'SELECT reviewed_venue_id AS reviewedVenueId, review_body AS reviewBody, star_rating AS starRating, ' +
         'cost_rating AS costRating, time_posted AS timePosted, review_author_id AS userId FROM Review WHERE reviewed_venue_id=?',
         [id],
         function(err, results) {
@@ -11,6 +16,11 @@ exports.getAll = (id, done) => {
     });
 };
 
+/**
+ * Updates DB with new review entry
+ * @param params
+ * @param done
+ */
 exports.insert = (params, done) => {
     let values = [params];
     db.getPool().query('INSERT INTO Review ' +
@@ -21,6 +31,12 @@ exports.insert = (params, done) => {
         });
 };
 
+/**
+ * Retrieves specific review
+ * @param userId
+ * @param venueId
+ * @param done
+ */
 exports.retrieveSpecific = (userId, venueId, done) => {
     db.getPool().query(
         'SELECT * FROM Review WHERE (review_author_id=? AND reviewed_venue_id=?)',
@@ -31,6 +47,11 @@ exports.retrieveSpecific = (userId, venueId, done) => {
         });
 };
 
+/**
+ * Genetric retrieving review
+ * @param id
+ * @param done
+ */
 exports.retrieve = (id, done) => {
     db.getPool().query(
         'SELECT reviewed_venue_id AS venueId, review_body AS reviewBody, star_rating AS starRating, ' +

@@ -1,5 +1,10 @@
 const db = require('../../config/db');
 
+/**
+ * Obtain category name via category id
+ * @param id
+ * @param done
+ */
 exports.getCategoryFromId = (id, done) => {
     db.getPool().query(
         'SELECT category_name AS categoryName FROM VenueCategory WHERE category_id=?',
@@ -10,6 +15,11 @@ exports.getCategoryFromId = (id, done) => {
         });
 };
 
+/**
+ * Obtain categories details via category id
+ * @param id
+ * @param done
+ */
 exports.getCategories = (id, done) => {
     db.getPool().query(
         'SELECT category_name AS categoryName, category_description AS categoryDescription FROM VenueCategory WHERE category_id=?',
@@ -21,6 +31,10 @@ exports.getCategories = (id, done) => {
 };
 
 
+/**
+ * Generic Get All categories
+ * @param done
+ */
 exports.getAllCategories = (done) => {
     db.getPool().query(
         'SELECT category_id AS categoryId, category_name AS categoryName, category_description AS categoryDescription ' +

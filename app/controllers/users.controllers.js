@@ -3,14 +3,13 @@ const emailvalidator = require("email-validator");
 const validator = require('../helpers/validator');
 const passwordHash = require('../helpers/password_hash');
 
-exports.list = function(req, res) {
-   User.getAll(function(results) {
-       return res.json(results);
-
-   });
-};
-
-exports.create = function(req, res) {
+/**
+ * Creates a new user entity to be stored in DB
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.create = (req, res) => {
     if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("email") ||
         !req.body.hasOwnProperty("givenName") || !req.body.hasOwnProperty("familyName") ||
         !req.body.hasOwnProperty("password")) {
@@ -50,7 +49,13 @@ exports.create = function(req, res) {
     }
 };
 
-exports.login = function(req, res) {
+/**
+ * Allows user to login and stores auth token in DB
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.login = (req, res) => {
     let username = req.body.username;
     let email = req.body.email;
     let password = req.body.password;
@@ -70,7 +75,12 @@ exports.login = function(req, res) {
     }
 };
 
-exports.logout = function(req, res) {
+/**
+ * Safely and securely logs the user out.
+ * @param req
+ * @param res
+ */
+exports.logout = (req, res) => {
     let token = req.headers['x-authorization'];
     User.removeToken(token, function(err){
         if (token === "" || err){
@@ -81,7 +91,13 @@ exports.logout = function(req, res) {
     });
 };
 
-exports.read = function(req, res) {
+/**
+ * Retrieves user's details, if authenticated, email row will be displayed
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.read = (req, res) => {
     let id = parseInt(req.params.userId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
@@ -101,7 +117,13 @@ exports.read = function(req, res) {
 
 };
 
-exports.update = function(req, res) {
+/**
+ * Updates user details
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.update = (req, res) => {
     let id = parseInt(req.params.userId);
 
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
