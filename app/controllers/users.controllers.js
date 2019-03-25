@@ -3,13 +3,6 @@ const emailvalidator = require("email-validator");
 const validator = require('../helpers/validator');
 const passwordHash = require('../helpers/password_hash');
 
-exports.list = function(req, res) {
-   User.getAll(function(results) {
-       return res.json(results);
-
-   });
-};
-
 exports.create = function(req, res) {
     if (!req.body.hasOwnProperty("username") || !req.body.hasOwnProperty("email") ||
         !req.body.hasOwnProperty("givenName") || !req.body.hasOwnProperty("familyName") ||
