@@ -1,5 +1,13 @@
 const db = require('../../config/db');
 
+exports.getAll = (done) => {
+    db.getPool().query('SELECT venue_id AS venueId, venue_name AS venueName, category_id AS categoryId,' +
+        'city, short_description AS shortDescription, latitude, longitude, admin_id AS adminId FROM Venue', function (err, results) {
+        if (err) return done(err);
+        return done(err, results);
+    });
+};
+
 exports.insert = (venue, done) => {
     let values = [venue];
     db.getPool().query(
