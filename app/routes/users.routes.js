@@ -1,8 +1,11 @@
 const users = require('../controllers/users.controllers');
 
+/**
+ * API methods for Users
+ * @param app
+ */
 module.exports = function(app){
     app.route(app.rootUrl + '/users')
-        .get(users.list) //debug
         .post(users.create);
 
     app.route(app.rootUrl + '/users/login')

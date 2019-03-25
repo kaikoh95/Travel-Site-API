@@ -5,7 +5,13 @@ const Venue = require('../models/venues.models');
 const VenuePhoto = require('../models/venues.photos.models');
 const validator = require('../helpers/validator');
 
-exports.list = function(req, res) {
+/**
+ * Lists reviews of a venue
+ * @param req
+ * @param res
+ * @returns - response object
+ */
+exports.list = (req, res) => {
     let id = parseInt(req.params.venueId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
@@ -48,7 +54,14 @@ exports.list = function(req, res) {
     });
 };
 
-exports.create = function(req, res) {
+
+/**
+ * Writes a review on to the specific venue
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.create = (req, res) => {
     let venueId = parseInt(req.params.venueId);
     if (!validator.isValidId(venueId)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
@@ -105,19 +118,23 @@ exports.create = function(req, res) {
                                         }
                                         res.status(201).send("Created: You have posted a review");
                                     });
-
                                 }
                             });
                         }
                     }
                 });
-
             }
         });
     }
 };
 
-exports.getOne = function(req, res) {
+/**
+ * Retrieves reviews written by the current user
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.getOne = (req, res) => {
     let id = parseInt(req.params.userId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
         'it is an edge case to be considered when the ID given cannot be parsed as an integer)');
@@ -172,7 +189,7 @@ exports.getOne = function(req, res) {
                                                                     "primaryPhoto": primaryPhoto[0].primaryPhoto
                                                                 }
                                                             };
-                                                            console.log(jsonResult);
+
                                                             finalJson[index] = (jsonResult);
                                                             if (index >= results.length-1) {
                                                                 let jsonAsArray = finalJson.sort(function (itemA, itemB) {
@@ -197,5 +214,4 @@ exports.getOne = function(req, res) {
             }
         }
     });
-    
 };

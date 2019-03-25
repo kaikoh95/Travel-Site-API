@@ -1,5 +1,9 @@
 const venues = require('../controllers/venues.photos.controllers');
 
+/**
+ * API method for Venues.photos
+ * @param app
+ */
 module.exports = function(app){
     app.route(app.rootUrl + '/venues/:venueId/photos')
         .post(venues.addPhoto);

@@ -2,13 +2,6 @@ const db = require('../../config/db');
 const passwordHash = require('../helpers/password_hash');
 const crypto = require('crypto');
 
-exports.getAll = (done) => {
-    db.getPool().query('SELECT * FROM User', function (err, rows) {
-        if (err) return done({"ERROR": "Error selecting"});
-        return done(rows);
-    });
-};
-
 /**
  * Creates new user in the database
  * @param user - contains user details supplied from the request body

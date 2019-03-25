@@ -2,19 +2,365 @@ const Venue = require('../models/venues.models');
 const VenuePhoto = require('../models/venues.photos.models');
 const User = require('../models/users.models');
 const Category = require('../models/categories.models');
+const Review = require('../models/reviews.models');
 const validator = require('../helpers/validator');
+const haversine = require('haversine')
 
-exports.list = function (req, res) {
-    Venue.getAll(req.query, function(err, results) {
-        if (err || !results) {
-            return res.sendStatus(400);
+/**
+ * Lists a venues and allows custom results from querying
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.list = (req, res) => {
+    if (req.query.hasOwnProperty("myLatitude")) {
+        if (isNaN(Number(req.query.myLatitude)) ||
+            Number(req.query.myLatitude) > 90.0 || Number(req.query.myLatitude < -90.0)) {
+            return res.status(400).send('Bad Request: Query cannot be processed now');
+        }
+    }
+    if (req.query.hasOwnProperty("myLongitude")) {
+        if (isNaN(Number(req.query.myLongitude)) ||
+            Number(req.query.myLongitude) > 180.0 || Number(req.query.myLongitude < -180.0)) {
+            return res.status(400).send('Bad Request: Query cannot be processed now');
+        }
+    }
+    Venue.getAll(function(err, allVenues) {
+        if (err || !allVenues || allVenues.length < 1) {  // no venue found
+            return res.status(400).send('Bad Request: Query cannot be processed now');
         } else {
-            return res.status(200).json(results);
+            let venuesArray = [];
+            let mainCount = 0;
+            allVenues.forEach(function (venue) {
+                let venueId = venue.venueId;
+                let adminId = venue.adminId;
+                let venueName = venue.venueName;
+                let categoryId = venue.categoryId;
+                let city = venue.city;
+                let shortDescription = venue.shortDescription;
+                let venueLatitude = venue.latitude;
+                let venueLongitude = venue.longitude;
+
+                Review.getAll(venueId, function(err, allReviews) {
+                    let meanStarRating = 0;
+                    let modeCostRating = 0;
+                    let reviewNull = false;
+                    if (err) {
+                        return res.status(400).send('Bad Request: Query cannot be processed now');
+                    } else {
+                        if (!allReviews || allReviews.length < 1) {
+                            reviewNull = true;
+                        }
+                        let starCount = 0;
+                        let costCount = {"0": 0, "1": 0, "2": 0, "3": 0, "4": 0};
+                        let costKeyArray = Object.keys(costCount);
+                        allReviews.forEach(function (review) {
+                            meanStarRating += review.starRating;
+                            starCount++;
+                            let costRating = review.costRating;
+                            if (Number(costKeyArray[0]) === costRating) {
+                                costCount[costRating.toString()] += 1
+                            } else if (Number(costKeyArray[1]) === costRating) {
+                                costCount[costRating.toString()] += 1
+                            } else if (Number(costKeyArray[2]) === costRating) {
+                                costCount[costRating.toString()] += 1
+                            } else if (Number(costKeyArray[3]) === costRating) {
+                                costCount[costRating.toString()] += 1
+                            } else if (Number(costKeyArray[4]) === costRating) {
+                                costCount[costRating.toString()] += 1
+                            }
+                            if (starCount > allReviews.length-1) {
+                                meanStarRating = Number(meanStarRating / starCount);
+                                starCount = 0
+                            }
+                        });
+                        costKeyArray.forEach(function(count) {
+                            if (costCount[count] >= costCount[modeCostRating]) {
+                                modeCostRating = Number(count);
+                            }
+                        });
+                        meanStarRating = Math.round(meanStarRating * 1000) / 1000;
+                        VenuePhoto.getPhotoFromId(venueId, function(err, primaryPhoto) {
+                            let primaryNull = false;
+                            let photo = "";
+                            if (err) {
+                                return res.status(400).send('Bad Request: Query cannot be processed now');
+                            } else {
+                                if (!primaryPhoto || primaryPhoto.length < 1) {
+                                    primaryNull = true;
+                                } else {
+                                    photo = primaryPhoto[0].primaryPhoto;
+                                }
+                                let userVenueDistance = 0;
+                                if (req.query.hasOwnProperty("myLatitude") && req.query.hasOwnProperty("myLongitude")) {
+                                    let userPosition = {
+                                        latitude: Number(req.query.myLatitude),
+                                        longitude: Number(req.query.myLongitude)
+                                    };
+
+                                    let venuePosition = {
+                                        latitude: Number(venueLatitude),
+                                        longitude: Number(venueLongitude)
+                                    };
+                                    userVenueDistance = Math.round(haversine(userPosition, venuePosition, {unit: 'km'}) * 1000 ) / 1000;
+                                }
+                                let data = {};
+                                if (reviewNull === true) {
+                                    if (primaryNull === true) {
+                                        data = {
+                                            "adminId": adminId,
+                                            "venueId": venueId,
+                                            "venueName": venueName,
+                                            "categoryId": categoryId,
+                                            "city": city,
+                                            "shortDescription": shortDescription,
+                                            "latitude": venueLatitude,
+                                            "longitude": venueLongitude,
+                                            "meanStarRating": null,
+                                            "modeCostRating": null,
+                                            "primaryPhoto": null,
+                                            "distance": userVenueDistance
+                                        };
+                                    } else {
+                                        data = {
+                                            "adminId": adminId,
+                                            "venueId": venueId,
+                                            "venueName": venueName,
+                                            "categoryId": categoryId,
+                                            "city": city,
+                                            "shortDescription": shortDescription,
+                                            "latitude": venueLatitude,
+                                            "longitude": venueLongitude,
+                                            "meanStarRating": null,
+                                            "modeCostRating": null,
+                                            "primaryPhoto": photo,
+                                            "distance": userVenueDistance
+                                        };
+                                    }
+                                } else {
+                                    if (primaryNull === true) {
+                                        data = {
+                                            "adminId": adminId,
+                                            "venueId": venueId,
+                                            "venueName": venueName,
+                                            "categoryId": categoryId,
+                                            "city": city,
+                                            "shortDescription": shortDescription,
+                                            "latitude": venueLatitude,
+                                            "longitude": venueLongitude,
+                                            "meanStarRating": meanStarRating,
+                                            "modeCostRating": modeCostRating,
+                                            "primaryPhoto": null,
+                                            "distance": userVenueDistance
+                                        };
+                                    } else {
+                                        data = {
+                                            "adminId": adminId,
+                                            "venueId": venueId,
+                                            "venueName": venueName,
+                                            "categoryId": categoryId,
+                                            "city": city,
+                                            "shortDescription": shortDescription,
+                                            "latitude": venueLatitude,
+                                            "longitude": venueLongitude,
+                                            "meanStarRating": meanStarRating,
+                                            "modeCostRating": modeCostRating,
+                                            "primaryPhoto": photo,
+                                            "distance": userVenueDistance
+                                        };
+                                    }
+                                }
+                                if (!req.query.hasOwnProperty("myLatitude") || !req.query.hasOwnProperty("myLongitude")) {
+                                    delete data.distance;
+                                }
+
+                                venuesArray.push(data);
+                                mainCount++;
+
+                                //filter by query
+                                if (mainCount >= allVenues.length) {
+                                    let queryCity = "";
+                                    let queryQ = "";
+                                    let querySort = "STAR_RATING";
+                                    let queryReverse = "false";
+                                    let queryCat = -1;
+                                    let queryStar = -1;
+                                    let queryCost = -1;
+                                    let queryAdmin = -1;
+                                    let queryIndex = -1;
+                                    let queryCount = -1;
+
+                                    if (req.query.hasOwnProperty("startIndex")) {
+                                        if (req.query.startIndex.length > 0 && Number.isInteger(Number(req.query.startIndex))) {
+                                            queryIndex = Number(req.query.startIndex);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (req.query.hasOwnProperty("count")) {
+                                        if (req.query.count.length > 0 && Number.isInteger(Number(req.query.count))) {
+                                            queryCount = Number(req.query.count);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+
+                                    if (req.query.hasOwnProperty("categoryId")) {
+                                        if (req.query.categoryId.length > 0 && Number.isInteger(Number(req.query.categoryId))) {
+                                            queryCat = Number(req.query.categoryId);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (req.query.hasOwnProperty("minStarRating")) {
+                                        if (req.query.minStarRating.length > 0 && Number.isInteger(Number(req.query.minStarRating))) {
+                                            queryStar = Number(req.query.minStarRating);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (req.query.hasOwnProperty("maxCostRating")) {
+                                        if (req.query.maxCostRating.length > 0 && Number.isInteger(Number(req.query.maxCostRating))) {
+                                            queryCost = Number(req.query.maxCostRating);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (req.query.hasOwnProperty("adminId")) {
+                                        if (req.query.adminId.length > 0 && Number.isInteger(Number(req.query.adminId))) {
+                                            queryAdmin = Number(req.query.adminId);
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+
+                                    if (req.query.hasOwnProperty("city")) {
+                                        if (req.query.city.length > 0) {
+                                            queryCity = req.query.city;
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (req.query.hasOwnProperty("q")) {
+                                        if (req.query.q.length > 0) {
+                                            queryQ = req.query.q;
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+
+                                    // get queries for filter
+                                    if (queryCat > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.categoryId === queryCat;
+                                        });
+                                    } 
+                                    
+                                    if (queryAdmin > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.adminId === queryAdmin;
+                                        });
+                                    }
+                                    if (queryStar > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.meanStarRating >= queryStar;
+                                        });
+                                    }
+                                    if (queryCost > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.modeCostRating <= queryCost;
+                                        });
+                                    }
+                                    if (queryCity.length > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.city.toLowerCase() === queryCity.toLowerCase();
+                                        });
+                                    }
+                                    if (queryQ.length > 0) {
+                                        venuesArray = venuesArray.filter(item => {
+                                            return item.venueName.toLowerCase().includes(queryQ.toLowerCase());
+                                        });
+                                    }
+
+                                    //sort by query
+                                    if (req.query.hasOwnProperty("sortBy")) {
+                                        if (req.query.sortBy.length > 0) {
+                                            querySort = req.query.sortBy;
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (querySort.toUpperCase() !== "STAR_RATING" && 
+                                        querySort.toUpperCase() !== "COST_RATING" && 
+                                        querySort.toUpperCase() !== "DISTANCE") {
+                                        return res.status(400).send('Bad Request: Query cannot be processed now');
+                                    }
+                                    if (querySort.toUpperCase() === "DISTANCE" &&
+                                        (!req.query.hasOwnProperty("myLatitude") || !req.query.hasOwnProperty("myLongitude"))) {
+                                        return res.status(400).send('Bad Request: Query cannot be processed now');
+                                    }
+                                    if (querySort.toUpperCase() === "STAR_RATING") {
+                                        venuesArray = venuesArray.sort(function (itemA, itemB) {
+                                            return itemB.meanStarRating - itemA.meanStarRating;
+                                        });
+                                    }
+                                    if (querySort.toUpperCase() === "COST_RATING") {
+                                        venuesArray = venuesArray.sort(function (itemA, itemB) {
+                                            return itemB.modeCostRating - itemA.modeCostRating;
+                                        });
+                                    }
+                                    if (querySort.toUpperCase() === "DISTANCE") {
+                                        venuesArray = venuesArray.sort(function (itemA, itemB) {
+                                            return itemA.distance - itemB.distance;
+                                        });
+                                    }
+
+                                    // to reverse sort?
+                                    if (req.query.hasOwnProperty("reverseSort")) {
+                                        if (req.query.reverseSort.length > 0) {
+                                            queryReverse = req.query.reverseSort;
+                                        } else {
+                                            return res.status(400).send('Bad Request: Query cannot be processed now');
+                                        }
+                                    }
+                                    if (queryReverse.toLowerCase() !== "true" && queryReverse.toLowerCase() !== "false") {
+                                        return res.status(400).send('Bad Request: Query cannot be processed now');
+                                    }
+                                    if (queryReverse.toLowerCase() === "true") {
+                                        venuesArray.reverse();
+                                    }
+
+                                    // paginated
+                                    if (queryIndex > 0) {
+                                        let length = venuesArray.length;
+                                        venuesArray = venuesArray.slice(queryIndex, length);
+                                    }
+                                    if (queryCount > 0) {
+                                        let arrayLength = venuesArray.length
+                                        while (arrayLength > queryCount) {
+                                            venuesArray.pop();
+                                            arrayLength = venuesArray.length
+                                        }
+                                    }
+                                    return res.status(200).json(venuesArray)
+
+                                }          
+                            }
+                        });
+                    }
+                });
+            });
         }
     });
 };
 
-exports.create = function (req, res) {
+/**
+ * Adds a new venue
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.create = (req, res) => {
     let token = req.headers['x-authorization'];
     if (token ===  undefined) {
         return res.status(401).send('Unauthorised: Please provide an authentication token');
@@ -82,7 +428,13 @@ exports.create = function (req, res) {
     }
 };
 
-exports.getOne = function (req, res) {
+/**
+ * Retrieves detailed info of a venu
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.getOne = (req, res) => {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
         return res.status(404).send('Not Found: Invalid venue ID');
@@ -166,7 +518,13 @@ exports.getOne = function (req, res) {
     });
 };
 
-exports.update = function (req, res) {
+/**
+ * Updates the venue
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.update = (req, res) => {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
         return res.status(404).send('Not Found: Invalid venue ID');
@@ -261,7 +619,12 @@ exports.update = function (req, res) {
 
 };
 
-exports.getCategory = function (req, res) {
+/**
+ * Gets all categories available
+ * @param req
+ * @param res
+ */
+exports.getCategory = (req, res) => {
     Category.getAllCategories(function(results) {
         return res.status(200).json(results);
     });

@@ -2,6 +2,12 @@ const Photo = require('../models/users.photos.models');
 const User = require('../models/users.models');
 const validator = require('../helpers/validator');
 
+/**
+ * Retrieves user photo
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.retrieve = (req, res) => {
     let id = parseInt(req.params.userId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
@@ -38,6 +44,12 @@ exports.retrieve = (req, res) => {
     });
 };
 
+/**
+ * Uploads new profile photo, which replaces the current one if any
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.put = (req, res) => {
     let id = parseInt(req.params.userId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
@@ -92,6 +104,12 @@ exports.put = (req, res) => {
     }
 };
 
+/**
+ * Deletes profile photo of user
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.remove = (req, res) => {
     let id = parseInt(req.params.userId);
     if (!validator.isValidId(id)) return res.status(400).send('Bad Request: Wrong ID format (This is not required but ' +
