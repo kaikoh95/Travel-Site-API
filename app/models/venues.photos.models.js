@@ -16,7 +16,6 @@ exports.getPhotoFromId = (id, done) => {
         'SELECT photo_filename AS primaryPhoto FROM VenuePhoto WHERE (is_primary=1 AND venue_id=?)',
         [id],
         function(err, results) {
-            console.log(results)
             if (err) return done(err);
             return done(err, results);
         });

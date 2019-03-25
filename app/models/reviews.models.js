@@ -2,7 +2,7 @@ const db = require('../../config/db');
 
 exports.getAll = (id, done) => {
     db.getPool().query(
-        'SELECT review_body AS reviewBody, star_rating AS starRating, ' +
+        'SELECT reviewed_venue_id AS reviewedVenueId, review_body AS reviewBody, star_rating AS starRating, ' +
         'cost_rating AS costRating, time_posted AS timePosted, review_author_id AS userId FROM Review WHERE reviewed_venue_id=?',
         [id],
         function(err, results) {
