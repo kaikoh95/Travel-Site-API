@@ -213,14 +213,16 @@ exports.list = (req, res) => {
                                         }
                                     }
                                     if (req.query.hasOwnProperty("minStarRating")) {
-                                        if (req.query.minStarRating.length > 0 && Number.isInteger(Number(req.query.minStarRating))) {
+                                        if (req.query.minStarRating.length > 0 && Number.isInteger(Number(req.query.minStarRating)) &&
+                                            req.query.minStarRating > 0 && req.query.minStarRating < 6) {
                                             queryStar = Number(req.query.minStarRating);
                                         } else {
                                             return res.status(400).send('Bad Request: Query cannot be processed now');
                                         }
                                     }
                                     if (req.query.hasOwnProperty("maxCostRating")) {
-                                        if (req.query.maxCostRating.length > 0 && Number.isInteger(Number(req.query.maxCostRating))) {
+                                        if (req.query.maxCostRating.length > 0 && Number.isInteger(Number(req.query.maxCostRating)) &&
+                                            req.query.maxCostRating >= 0 && req.query.maxCostRating < 5) {
                                             queryCost = Number(req.query.maxCostRating);
                                         } else {
                                             return res.status(400).send('Bad Request: Query cannot be processed now');
@@ -265,15 +267,11 @@ exports.list = (req, res) => {
                                         venuesArray = venuesArray.filter(item => {
                                             return item.meanStarRating >= queryStar;
                                         });
-                                    } else {
-                                        return res.status(400).send('Bad Request: Query cannot be processed now');
                                     }
                                     if (queryCost >= 0 && queryCost < 5) {
                                         venuesArray = venuesArray.filter(item => {
                                             return item.modeCostRating <= queryCost;
                                         });
-                                    } else {
-                                        return res.status(400).send('Bad Request: Query cannot be processed now');
                                     }
                                     if (queryCity.length > 0) {
                                         venuesArray = venuesArray.filter(item => {
