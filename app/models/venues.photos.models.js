@@ -1,5 +1,10 @@
 const db = require('../../config/db');
 
+/**
+ * Retrieves single photo via given venue id
+ * @param id
+ * @param done
+ */
 exports.getPhoto = (id, done) => {
     db.getPool().query(
         'SELECT photo_filename AS photoFilename, photo_raw AS photoRaw, photo_description AS photoDescription, is_primary AS isPrimary' +
@@ -11,6 +16,11 @@ exports.getPhoto = (id, done) => {
         });
 };
 
+/**
+ * Identifies and retrieves primary photo of venue from venue id
+ * @param id
+ * @param done
+ */
 exports.getPhotoFromId = (id, done) => {
     db.getPool().query(
         'SELECT photo_filename AS primaryPhoto FROM VenuePhoto WHERE (is_primary=1 AND venue_id=?)',
@@ -21,6 +31,11 @@ exports.getPhotoFromId = (id, done) => {
         });
 };
 
+/**
+ * Retrieves photo details from given photo filename
+ * @param values
+ * @param done
+ */
 exports.getPhotoFromName = (values, done) => {
     db.getPool().query(
         'SELECT photo_filename AS photoFilename, photo_raw AS photoRaw, photo_description AS photoDescription, is_primary AS isPrimary' +
@@ -32,6 +47,11 @@ exports.getPhotoFromName = (values, done) => {
         });
 };
 
+/**
+ * Creates new photo row
+ * @param values
+ * @param done
+ */
 exports.insertPhoto = (values, done) => {
     db.getPool().query(
         'INSERT INTO VenuePhoto (venue_id, photo_filename, photo_raw, photo_description, is_primary) VALUES ?',
@@ -41,6 +61,11 @@ exports.insertPhoto = (values, done) => {
         });
 };
 
+/**
+ * updates photo
+ * @param values
+ * @param done
+ */
 exports.updatePhoto = (values, done) => {
     db.getPool().query(
         'UPDATE VenuePhoto SET is_primary=? WHERE (venue_id=? AND photo_filename=?)',
@@ -50,6 +75,11 @@ exports.updatePhoto = (values, done) => {
         });
 };
 
+/**
+ * Deletes photos from a venue
+ * @param values
+ * @param done
+ */
 exports.deletePhoto = (values, done) => {
     db.getPool().query(
         'DELETE FROM VenuePhoto WHERE (venue_id=? AND photo_filename=?)',

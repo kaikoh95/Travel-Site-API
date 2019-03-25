@@ -6,7 +6,13 @@ const Review = require('../models/reviews.models');
 const validator = require('../helpers/validator');
 const haversine = require('haversine')
 
-exports.list = function (req, res) {
+/**
+ * Lists a venues and allows custom results from querying
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.list = (req, res) => {
     if (req.query.hasOwnProperty("myLatitude")) {
         if (isNaN(Number(req.query.myLatitude)) ||
             Number(req.query.myLatitude) > 90.0 || Number(req.query.myLatitude < -90.0)) {
@@ -348,7 +354,13 @@ exports.list = function (req, res) {
     });
 };
 
-exports.create = function (req, res) {
+/**
+ * Adds a new venue
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.create = (req, res) => {
     let token = req.headers['x-authorization'];
     if (token ===  undefined) {
         return res.status(401).send('Unauthorised: Please provide an authentication token');
@@ -416,7 +428,13 @@ exports.create = function (req, res) {
     }
 };
 
-exports.getOne = function (req, res) {
+/**
+ * Retrieves detailed info of a venu
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.getOne = (req, res) => {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
         return res.status(404).send('Not Found: Invalid venue ID');
@@ -500,7 +518,13 @@ exports.getOne = function (req, res) {
     });
 };
 
-exports.update = function (req, res) {
+/**
+ * Updates the venue
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
+exports.update = (req, res) => {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
         return res.status(404).send('Not Found: Invalid venue ID');
@@ -595,7 +619,12 @@ exports.update = function (req, res) {
 
 };
 
-exports.getCategory = function (req, res) {
+/**
+ * Gets all categories available
+ * @param req
+ * @param res
+ */
+exports.getCategory = (req, res) => {
     Category.getAllCategories(function(results) {
         return res.status(200).json(results);
     });

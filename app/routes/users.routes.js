@@ -1,5 +1,9 @@
 const users = require('../controllers/users.controllers');
 
+/**
+ * API methods for Users
+ * @param app
+ */
 module.exports = function(app){
     app.route(app.rootUrl + '/users')
         .post(users.create);

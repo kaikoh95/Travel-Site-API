@@ -1,5 +1,9 @@
 const db = require('../../config/db');
 
+/**
+ * Generic details retrieval from Venue
+ * @param done
+ */
 exports.getAll = (done) => {
     db.getPool().query('SELECT venue_id AS venueId, venue_name AS venueName, category_id AS categoryId,' +
         'city, short_description AS shortDescription, latitude, longitude, admin_id AS adminId FROM Venue', function (err, results) {
@@ -8,6 +12,11 @@ exports.getAll = (done) => {
     });
 };
 
+/**
+ * Inserts new row into Venue
+ * @param venue
+ * @param done
+ */
 exports.insert = (venue, done) => {
     let values = [venue];
     db.getPool().query(
@@ -19,6 +28,11 @@ exports.insert = (venue, done) => {
     });
 };
 
+/**
+ * Retrieves specific row of Venue
+ * @param id
+ * @param done
+ */
 exports.getVenue = (id, done) => {
     db.getPool().query(
         'SELECT venue_id AS venueId, admin_id AS userId, category_id AS categoryId, venue_name AS venueName, city, ' +
@@ -30,6 +44,11 @@ exports.getVenue = (id, done) => {
         });
 };
 
+/**
+ * Updates Venue with info supplied
+ * @param values
+ * @param done
+ */
 exports.updateVenue = (values, done) => {
     db.getPool().query(
         'UPDATE Venue SET venue_name=?, category_id=?, city=?, short_description=?, ' +

@@ -1,4 +1,9 @@
-
+/**
+ * Module to generate random integers
+ * @param min
+ * @param max
+ * @returns {*}
+ */
 exports.getRandomInt = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);

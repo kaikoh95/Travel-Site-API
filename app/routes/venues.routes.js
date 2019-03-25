@@ -1,5 +1,9 @@
 const venues = require('../controllers/venues.controllers');
 
+/**
+ * API methods for venues
+ * @param app
+ */
 module.exports = function(app){
     app.route(app.rootUrl + '/venues')
         .get(venues.list)

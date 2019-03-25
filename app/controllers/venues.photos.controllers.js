@@ -4,6 +4,12 @@ const User = require('../models/users.models');
 const validator = require('../helpers/validator');
 const randomInt = require('../helpers/generate_random_integer');
 
+/**
+ * Adds photo to venues
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.addPhoto = function (req, res) {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
@@ -86,6 +92,12 @@ exports.addPhoto = function (req, res) {
     });
 };
 
+/**
+ * Retrieves photos of venues
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.getPhoto = function (req, res) {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
@@ -123,6 +135,13 @@ exports.getPhoto = function (req, res) {
     });
 };
 
+/**
+ * Deletes selected photo and sets a random photo to primary if the deleted
+ * photo isPrimary.
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.deletePhoto = function (req, res) {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
@@ -213,6 +232,12 @@ exports.deletePhoto = function (req, res) {
     });
 };
 
+/**
+ * Sets a primary photo
+ * @param req
+ * @param res
+ * @returns {*|void|boolean}
+ */
 exports.setPrimary = function (req, res) {
     let id = Number(req.params.venueId);
     if (!validator.isValidId(id) || isNaN(id) || !Number.isInteger(id)) {
@@ -259,7 +284,6 @@ exports.setPrimary = function (req, res) {
                                                 }
                                             });
                                             let data = [1, venueId, photoName];
-                                            console.log(photoName)
                                             VenuePhoto.updatePhoto(data, function(error) {
                                                 if (error) {
                                                     return res.status(404).send('Not Found: Photo does not exist');
